@@ -1,0 +1,9 @@
+# Live deal data — never in public repo
+opportunities/
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# macOS
+.DS_Store
+**/.DS_Store

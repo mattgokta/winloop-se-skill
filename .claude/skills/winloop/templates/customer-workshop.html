@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<!--
+  WinLoop Customer-Facing Workshop Template
+  ==========================================
+  Okta-branded, Portuguese by default. Adapt per opportunity.
+
+  PLACEHOLDERS — replace before sending:
+    ACCOUNT_NAME          — e.g. "VR Benefícios"
+    LOGO_B64              — base64 PNG/JPG of customer logo (data:image/png;base64,...)
+                            Tip: curl -sL <logo_url> | base64 | tr -d '\n'
+    WORKSHOP_DATE         — e.g. "11 de agosto de 2026"
+    WORKSHOP_FORMAT       — e.g. "Hands-on · ~4 horas"
+    WORKSHOP_LOCATION     — e.g. "Escritório ACCOUNT_NAME · São Paulo"
+    PRODUCT_AREA          — e.g. "Okta IGA" / "Okta Workforce Identity" / "Okta CIAM"
+    SE_NAME               — Solutions Engineer full name
+    AE_NAME               — Account Executive full name
+    CHALLENGE_ROWS        — repeat the .challenge-row block per pain point (see example below)
+    AGENDA_ITEMS          — repeat the .agenda-item block per session block (see example below)
+    BRING_LEFT / BRING_RIGHT — two .bring-card blocks (logistics + use cases)
+    NEXT_STEPS_CUSTOMER   — .step-row blocks for customer actions
+    NEXT_STEPS_OKTA       — .step-row blocks for SE/vendor actions
+    FOOTER_TEXT           — e.g. "Preparado exclusivamente para ACCOUNT_NAME · Workshop de WORKSHOP_DATE"
+
+  CHALLENGE_ROW example:
+    <div class="challenge-row">
+      <div class="challenge-left">
+        <div class="col-label pain-label">Desafio atual</div>
+        <p>PAIN_POINT_DESCRIPTION</p>
+      </div>
+      <div class="challenge-right">
+        <div class="col-label sol-label">Como o Okta resolve</div>
+        <div class="feature-tag">OKTA_FEATURE_NAME</div>
+        <p>SOLUTION_DESCRIPTION</p>
+      </div>
+    </div>
+
+  AGENDA_ITEM example:
+    <div class="agenda-item">
+      <div class="agenda-num">N</div>
+      <div>
+        <div class="ai-title">BLOCK_TITLE</div>
+        <div class="ai-desc">BLOCK_DESCRIPTION</div>
+      </div>
+    </div>
+-->
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workshop PRODUCT_AREA — ACCOUNT_NAME | WORKSHOP_DATE</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f7;
+      color: #1a1a2e;
+      line-height: 1.65;
+    }
+
+    /* ── Hero — Okta gradient ── */
+    .hero {
+      background:
+        radial-gradient(ellipse 70% 80% at 65% 10%, #2a3aff 0%, transparent 55%),
+        radial-gradient(ellipse 55% 65% at 5%  90%, #cc2200 0%, transparent 55%),
+        linear-gradient(160deg, #0d0d52 0%, #1a0066 40%, #3a0066 65%, #1a0033 100%);
+      padding: 52px 40px 44px;
+    }
+    .hero-inner { max-width: 920px; margin: 0 auto; }
+
+    .logo-row {
+      display: flex; align-items: center;
+      gap: 32px; margin-bottom: 40px; flex-wrap: wrap;
+    }
+    .account-logo-wrap {
+      background: #fff; border-radius: 10px;
+      padding: 9px 18px; display: flex; align-items: center;
+    }
+    .account-logo-wrap img {
+      height: 42px; object-fit: contain; display: block;
+    }
+    .logo-divider { width: 1px; height: 44px; background: rgba(255,255,255,0.22); }
+
+    .okta-brand { display: flex; align-items: center; gap: 9px; }
+    .okta-brand .okta-text {
+      font-size: 24px; font-weight: 700; color: #fff;
+      letter-spacing: -0.5px; line-height: 1;
+    }
+
+    .hero h1 {
+      font-size: 34px; font-weight: 700; color: #fff;
+      line-height: 1.22; margin-bottom: 12px; letter-spacing: -0.4px;
+    }
+    .hero .subtitle {
+      font-size: 16px; color: rgba(255,255,255,0.72);
+      margin-bottom: 30px; max-width: 560px;
+    }
+    .hero-chips { display: flex; gap: 12px; flex-wrap: wrap; }
+    .chip {
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 20px; padding: 6px 16px;
+      font-size: 13px; color: rgba(255,255,255,0.85);
+    }
+    .chip strong { color: #fff; }
+
+    /* ── Body ── */
+    .page { max-width: 920px; margin: 0 auto; padding: 40px 24px 64px; }
+
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1.6px; text-transform: uppercase;
+      color: #8892b0; margin-bottom: 16px;
+      padding-bottom: 10px; border-bottom: 2px solid #e8e8ed;
+    }
+
+    /* ── Intro ── */
+    .intro-card {
+      background: #fff; border-radius: 14px;
+      padding: 28px 32px; margin-bottom: 36px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      font-size: 15px; color: #374151;
+      border-left: 4px solid #2a3aff;
+    }
+    .intro-card p + p { margin-top: 14px; }
+
+    /* ── Challenge rows ── */
+    .challenge-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+    .challenge-row {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      overflow: hidden; display: grid; grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 640px) { .challenge-row { grid-template-columns: 1fr; } }
+    .challenge-left  { padding: 18px 22px; border-right: 1px solid #f0f0f0; }
+    .challenge-right { padding: 18px 22px; background: #f7f7ff; }
+    .col-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1.3px; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .col-label.pain-label { color: #cc2200; }
+    .col-label.sol-label  { color: #2a3aff; }
+    .challenge-left p, .challenge-right p { font-size: 14px; color: #374151; line-height: 1.55; }
+    .feature-tag {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      background: #eeeeff; color: #2a3aff;
+      padding: 2px 10px; border-radius: 10px; margin-bottom: 7px;
+    }
+
+    /* ── Agenda ── */
+    .agenda-card {
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      overflow: hidden; margin-bottom: 36px;
+    }
+    .agenda-header {
+      background:
+        radial-gradient(ellipse 70% 100% at 70% 0%,  #2a3aff 0%, transparent 60%),
+        radial-gradient(ellipse 50% 80%  at 0%  100%, #cc2200 0%, transparent 55%),
+        linear-gradient(150deg, #0d0d52 0%, #1a0066 50%, #1a0033 100%);
+      padding: 22px 30px; color: #fff;
+    }
+    .agenda-header h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .agenda-header p  { font-size: 13px; opacity: 0.78; }
+    .agenda-body { padding: 6px 0; }
+    .agenda-item {
+      display: flex; gap: 16px; padding: 14px 28px;
+      border-bottom: 1px solid #f4f4f8; align-items: flex-start;
+    }
+    .agenda-item:last-child { border-bottom: none; }
+    .agenda-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #eeeeff; color: #2a3aff;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .ai-title { font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 3px; }
+    .ai-desc  { font-size: 13px; color: #666; }
+
+    /* ── Bring grid ── */
+    .bring-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    @media (max-width: 640px) { .bring-grid { grid-template-columns: 1fr; } }
+    .bring-card { background: #fff; border-radius: 12px; padding: 22px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .bring-card .bc-icon { font-size: 22px; margin-bottom: 10px; }
+    .bring-card h4 { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 10px; }
+    .bring-card ul { list-style: none; padding: 0; }
+    .bring-card ul li {
+      font-size: 13px; color: #555;
+      padding: 5px 0 5px 16px; position: relative;
+      border-bottom: 1px solid #f5f5f7; line-height: 1.4;
+    }
+    .bring-card ul li:last-child { border-bottom: none; }
+    .bring-card ul li::before { content: "→"; position: absolute; left: 0; color: #2a3aff; font-weight: 700; }
+
+    /* ── After card ── */
+    .after-card {
+      border-radius: 14px; padding: 30px 34px; color: #fff; margin-bottom: 36px;
+      background:
+        radial-gradient(ellipse 70% 100% at 70% 0%,  #2a3aff 0%, transparent 60%),
+        radial-gradient(ellipse 50% 80%  at 0%  100%, #cc2200 0%, transparent 55%),
+        linear-gradient(150deg, #0d0d52 0%, #1a0066 50%, #1a0033 100%);
+    }
+    .after-card .section-label { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.12); }
+    .after-card p { font-size: 15px; color: rgba(255,255,255,0.82); line-height: 1.72; }
+    .after-card strong { color: #fff; }
+
+    /* ── Next steps ── */
+    .steps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    @media (max-width: 640px) { .steps-grid { grid-template-columns: 1fr; } }
+    .steps-col { background: #fff; border-radius: 12px; padding: 22px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .steps-col h4 {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.1px;
+      text-transform: uppercase; color: #8892b0;
+      margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #edf2f7;
+    }
+    .step-row {
+      display: flex; gap: 10px; padding: 9px 0;
+      border-bottom: 1px solid #f5f5f7; font-size: 13px; align-items: flex-start;
+    }
+    .step-row:last-child { border-bottom: none; }
+    .step-dot { width: 7px; height: 7px; border-radius: 50%; background: #2a3aff; flex-shrink: 0; margin-top: 5px; }
+    .sr-text  { color: #374151; }
+    .sr-owner { font-size: 11px; font-weight: 600; color: #8892b0; white-space: nowrap; }
+
+    /* ── Team ── */
+    .team-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 36px; }
+    .team-card {
+      background: #fff; border-radius: 12px; padding: 18px 22px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      flex: 1; min-width: 200px; border-top: 3px solid #2a3aff;
+    }
+    .tc-name    { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+    .tc-role    { font-size: 12px; color: #2a3aff; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .tc-company { font-size: 12px; color: #888; }
+
+    /* ── Footer ── */
+    .footer { text-align: center; padding: 24px; font-size: 12px; color: #aaa; border-top: 1px solid #e8e8ed; }
+    .footer strong { color: #555; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+
+    <div class="logo-row">
+      <!-- Account logo: embed base64 or use URL -->
+      <div class="account-logo-wrap">
+        <img src="LOGO_B64" alt="ACCOUNT_NAME">
+      </div>
+      <div class="logo-divider"></div>
+      <!-- Okta brand — do not modify -->
+      <div class="okta-brand">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(30  17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(60  17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(90  17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(120 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(150 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(180 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(210 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(240 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(270 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(300 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(330 17 17)"/>
+        </svg>
+        <span class="okta-text">okta</span>
+      </div>
+    </div>
+
+    <h1>Workshop de PRODUCT_AREA</h1>
+    <div class="subtitle">Uma sessão prática para conhecer, configurar e validar o Okta no ambiente de vocês</div>
+    <div class="hero-chips">
+      <div class="chip"><strong>Data:</strong> WORKSHOP_DATE</div>
+      <div class="chip"><strong>Formato:</strong> WORKSHOP_FORMAT</div>
+      <div class="chip"><strong>Local:</strong> WORKSHOP_LOCATION</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- INTRO — customize the two paragraphs -->
+  <div class="intro-card">
+    <p>Preparamos esta sessão com base nos desafios que vocês nos compartilharam. O objetivo não é apenas mostrar slides — vamos <strong>colocar a mão na massa juntos</strong>: configurar fluxos, integrar aplicações e sair do dia com casos de uso reais funcionando no ambiente de vocês.</p>
+    <p>Ao final da sessão, o tenant configurado durante o workshop continua ativo e pode evoluir para o ambiente de produção — eliminando retrabalho de implementação caso vocês decidam avançar com a plataforma.</p>
+  </div>
+
+  <!-- CHALLENGE ROWS — one block per pain point from the WinLoop debrief -->
+  <div class="section-label">Seus desafios · Como o Okta resolve</div>
+  <div class="challenge-grid">
+
+    <!-- COPY AND REPEAT THIS BLOCK FOR EACH PAIN POINT -->
+    <div class="challenge-row">
+      <div class="challenge-left">
+        <div class="col-label pain-label">Desafio atual</div>
+        <p>PAIN_POINT_DESCRIPTION</p>
+      </div>
+      <div class="challenge-right">
+        <div class="col-label sol-label">Como o Okta resolve</div>
+        <div class="feature-tag">OKTA_FEATURE_NAME</div>
+        <p>SOLUTION_DESCRIPTION</p>
+      </div>
+    </div>
+    <!-- END CHALLENGE ROW -->
+
+  </div>
+
+  <!-- AGENDA — one block per session segment -->
+  <div class="section-label">Agenda do Workshop · WORKSHOP_DATE</div>
+  <div class="agenda-card">
+    <div class="agenda-header">
+      <h3>WORKSHOP_FORMAT</h3>
+      <p>Todos os participantes acompanham e configuram ao vivo no próprio tenant</p>
+    </div>
+    <div class="agenda-body">
+
+      <!-- COPY AND REPEAT THIS BLOCK FOR EACH AGENDA ITEM -->
+      <div class="agenda-item">
+        <div class="agenda-num">1</div>
+        <div>
+          <div class="ai-title">BLOCK_TITLE</div>
+          <div class="ai-desc">BLOCK_DESCRIPTION</div>
+        </div>
+      </div>
+      <!-- END AGENDA ITEM -->
+
+    </div>
+  </div>
+
+  <!-- PREPARATION -->
+  <div class="section-label">Preparação para o dia</div>
+  <div class="bring-grid">
+    <div class="bring-card">
+      <div class="bc-icon">💻</div>
+      <h4>Logística</h4>
+      <ul>
+        <!-- BRING_LEFT items -->
+        <li>ITEM</li>
+      </ul>
+    </div>
+    <div class="bring-card">
+      <div class="bc-icon">📋</div>
+      <h4>Casos de uso da equipe</h4>
+      <ul>
+        <!-- BRING_RIGHT items -->
+        <li>ITEM</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="after-card">
+    <div class="section-label">Após o workshop</div>
+    <p>O tenant configurado durante a sessão <strong>permanece ativo</strong> e pode ser evoluído continuamente. Caso vocês decidam avançar com a plataforma, esse mesmo tenant pode se tornar o ambiente de produção — sem necessidade de reconfigurar do zero, reduzindo significativamente o tempo de implementação.</p>
+  </div>
+
+  <!-- NEXT STEPS -->
+  <div class="section-label">Próximos passos</div>
+  <div class="steps-grid">
+    <div class="steps-col">
+      <h4>ACCOUNT_NAME</h4>
+      <!-- NEXT_STEPS_CUSTOMER — copy .step-row block per action -->
+      <div class="step-row">
+        <div class="step-dot"></div>
+        <div>
+          <div class="sr-text">ACTION</div>
+          <div class="sr-owner">OWNER</div>
+        </div>
+      </div>
+    </div>
+    <div class="steps-col">
+      <h4>Okta</h4>
+      <!-- NEXT_STEPS_OKTA — copy .step-row block per action -->
+      <div class="step-row">
+        <div class="step-dot"></div>
+        <div>
+          <div class="sr-text">ACTION</div>
+          <div class="sr-owner">OWNER</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEAM -->
+  <div class="section-label">Sua equipe Okta</div>
+  <div class="team-row">
+    <div class="team-card">
+      <div class="tc-name">SE_NAME</div>
+      <div class="tc-role">Solutions Engineer</div>
+      <div class="tc-company">Okta · Brasil</div>
+    </div>
+    <div class="team-card">
+      <div class="tc-name">AE_NAME</div>
+      <div class="tc-role">Account Executive</div>
+      <div class="tc-company">Okta · Brasil</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>Okta, Inc.</strong> · FOOTER_TEXT
+</div>
+
+</body>
+</html>
