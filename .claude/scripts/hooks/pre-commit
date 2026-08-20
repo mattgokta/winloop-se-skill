@@ -1,0 +1,68 @@
+#!/bin/bash
+# WinLoop pre-commit hook
+# Blocks commits that contain real names, emails, photos, or customer data.
+# Run .claude/scripts/setup-hooks.sh to reinstall after a fresh clone.
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+BLOCKED=0
+STAGED=$(git diff --cached --name-only)
+
+for file in $STAGED; do
+    # Skip deleted files and the hook scripts themselves (they contain patterns as strings)
+    git show ":$file" > /dev/null 2>&1 || continue
+    [[ "$file" == .claude/scripts/* ]] && continue
+
+    content=$(git show ":$file" 2>/dev/null)
+
+    # ── Real employee names ──────────────────────────────────────────────
+    if echo "$content" | grep -iqE "matt\.gueiros|caetano\.becker"; then
+        echo -e "${RED}❌ BLOCKED:${NC} $file — contains a real Okta employee name"
+        BLOCKED=1
+    fi
+
+    # ── Real Okta email addresses ────────────────────────────────────────
+    # Allowed placeholders: name@, se@, ae@, your@okta.com and comment lines
+    disallowed=$(echo "$content" \
+        | grep -iE "[a-z0-9._%+-]+@okta\.com" \
+        | grep -viE "^\s*(#|//|<!--|--)" \
+        | grep -viE "(name|se|ae|your|example)@okta\.com")
+    if [ -n "$disallowed" ]; then
+        echo -e "${RED}❌ BLOCKED:${NC} $file — contains a real @okta.com email address"
+        BLOCKED=1
+    fi
+
+    # ── Large base64 blobs (embedded photos/logos in skill files) ───────
+    # Allowed in docs/assets/ (README screenshots). Blocked everywhere else.
+    if [[ "$file" != docs/assets/* ]]; then
+        long_b64=$(echo "$content" | awk 'length > 5000' | grep -cE '^[A-Za-z0-9+/=]+$' || echo 0)
+        if [ "${long_b64}" -gt 0 ] 2>/dev/null; then
+            echo -e "${RED}❌ BLOCKED:${NC} $file — contains a large base64 blob (embedded photo or binary)"
+            BLOCKED=1
+        fi
+    fi
+
+    # ── Real customer names (belong only in opportunities/, which is gitignored) ──
+    customer_hit=$(echo "$content" \
+        | grep -iE "\b(creditas|zenvia|nubank|itau|cimed|petrobras|natura)\b" \
+        | grep -viE "^\s*(#|//|<!--|--)")
+    if [ -n "$customer_hit" ]; then
+        echo -e "${YELLOW}⚠ WARNING:${NC} $file — contains a real customer name"
+        echo "           If intentional (e.g. anonymized test case), commit with: git commit --no-verify"
+        BLOCKED=1
+    fi
+
+done
+
+if [ "$BLOCKED" -eq 1 ]; then
+    echo ""
+    echo -e "${RED}Commit blocked.${NC} Review the files above and remove sensitive content."
+    echo "See .gitignore and .claude/scripts/hooks/pre-commit for the rules."
+    exit 1
+fi
+
+echo -e "${GREEN}✅ Pre-commit check passed — no personal or customer data detected.${NC}"
+exit 0
