@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<!--
+  WinLoop Customer-Facing APEX Value Template
+  ============================================
+  Use for "Why [Product] for [Account]" documents generated from a WinLoop debrief.
+  Follows APEX Command of the Message structure:
+    1. Before Scenario & Negative Consequences
+    2. After Scenario & Positive Business Outcomes
+    3. Required Capabilities (challenge rows)
+    4. How Okta Does It Better (capabilities section)
+
+  PLACEHOLDERS — replace before generating:
+    ACCOUNT_NAME        — e.g. "Grupo CIMED"
+    LOGO_B64            — data:image/png;base64,... or data:image/jpeg;base64,...
+                          Tip: curl -sL <url> | base64 | tr -d '\n'
+    PRODUCT_AREA        — e.g. "Okta PAM" / "Okta IGA" / "Okta Workforce Identity"
+    MONTH_YEAR          — e.g. "Agosto 2026"
+    HERO_CHIPS          — repeat .chip blocks (product areas, date)
+    BEFORE_P1           — first paragraph of Before Scenario
+    BEFORE_P2           — second paragraph of Before Scenario (optional; remove if not needed)
+    CHALLENGE_ROWS      — repeat the .challenge-row block per pain point (see example below)
+    AFTER_PARAGRAPH     — After Scenario & Positive Business Outcomes paragraph
+    CAPABILITY_ROWS     — repeat the .cap-row block per capability (see example below)
+    NEXT_STEPS_CUSTOMER — .step-row blocks for customer actions
+    NEXT_STEPS_OKTA     — .step-row blocks for SE/vendor actions
+    SE_NAME             — Solutions Engineer full name
+    SE_ROLE             — e.g. "Solutions Engineer"
+    SE_EMAIL            — e.g. "name@okta.com"
+    SE_PHOTO_B64        — data:image/jpeg;base64,... (square headshot, 512×512 ideal)
+    AE_NAME             — Account Executive full name
+    AE_ROLE             — e.g. "Account Executive"
+    AE_EMAIL            — e.g. "name@okta.com"
+    AE_PHOTO_B64        — data:image/jpeg;base64,...
+    FOOTER_TEXT         — e.g. "Preparado exclusivamente para ACCOUNT_NAME · MONTH_YEAR"
+
+  CHALLENGE_ROW example:
+    <div class="challenge-row">
+      <div class="challenge-left">
+        <div class="col-label pain-label">Desafio atual</div>
+        <p>PAIN_POINT_DESCRIPTION</p>
+      </div>
+      <div class="challenge-right">
+        <div class="col-label sol-label">Como o Okta resolve</div>
+        <div class="feature-tag">FEATURE_NAME</div>
+        <p>SOLUTION_DESCRIPTION</p>
+      </div>
+    </div>
+
+  CAPABILITY_ROW example:
+    <div class="cap-row">
+      <div class="cap-need">CAPABILITY_NAME</div>
+      <div class="cap-how">
+        <div class="feature-tag">FEATURE_TAG</div>
+        CAPABILITY_DESCRIPTION
+      </div>
+    </div>
+
+  RULES for customer-facing content (from WinLoop output contract):
+  - No accuracy flags, no forecast/confidence data, no Salesforce content
+  - No unconfirmed capability claims — build from ledger confirmed content only
+  - No internal coaching or commercial language
+  - No competitor mentions
+  - Write in the customer's language
+  - Make HTML self-contained: all CSS inline, images as base64
+-->
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Por que PRODUCT_AREA — ACCOUNT_NAME · MONTH_YEAR</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f7;
+      color: #1a1a2e;
+      line-height: 1.65;
+    }
+
+    @media print {
+      body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .hero, .after-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .page { padding: 20px 24px 40px; }
+      .challenge-row   { break-inside: avoid; page-break-inside: avoid; }
+      .cap-row         { break-inside: avoid; page-break-inside: avoid; }
+      .steps-grid      { break-inside: avoid; page-break-inside: avoid; }
+      .team-row        { break-inside: avoid; page-break-inside: avoid; }
+      .intro-card      { break-inside: avoid; page-break-inside: avoid; }
+      .after-card      { break-inside: avoid; page-break-inside: avoid; }
+      .steps-col       { break-inside: avoid; page-break-inside: avoid; }
+      .team-card       { break-inside: avoid; page-break-inside: avoid; }
+      .section-label   { break-after: avoid;  page-break-after: avoid; }
+      .challenge-grid  { break-inside: avoid; }
+      .intro-card, .steps-col, .cap-row, .team-card {
+        box-shadow: none;
+        border: 1px solid #e8e8ed;
+      }
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background:
+        radial-gradient(ellipse 70% 80% at 65% 10%, #2a3aff 0%, transparent 55%),
+        radial-gradient(ellipse 55% 65% at 5%  90%, #cc2200 0%, transparent 55%),
+        linear-gradient(160deg, #0d0d52 0%, #1a0066 40%, #3a0066 65%, #1a0033 100%);
+      padding: 52px 40px 44px;
+    }
+    .hero-inner { max-width: 920px; margin: 0 auto; }
+
+    .logo-row {
+      display: flex; align-items: center;
+      gap: 32px; margin-bottom: 40px; flex-wrap: wrap;
+    }
+    .account-logo-wrap { display: flex; align-items: center; }
+    .account-logo-wrap img { height: 48px; width: 48px; object-fit: cover; display: block; border-radius: 8px; }
+    .logo-divider { width: 1px; height: 44px; background: rgba(255,255,255,0.22); }
+    .okta-brand { display: flex; align-items: center; gap: 9px; }
+    .okta-brand .okta-text { font-size: 24px; font-weight: 700; color: #fff; letter-spacing: -0.5px; line-height: 1; }
+
+    .hero h1 { font-size: 36px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 14px; letter-spacing: -0.5px; }
+    .hero .subtitle { font-size: 16px; color: rgba(255,255,255,0.72); margin-bottom: 32px; max-width: 600px; }
+    .hero-chips { display: flex; gap: 12px; flex-wrap: wrap; }
+    .chip {
+      background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 20px; padding: 6px 16px; font-size: 13px; color: rgba(255,255,255,0.85);
+    }
+    .chip strong { color: #fff; }
+
+    /* ── Page body ── */
+    .page { max-width: 920px; margin: 0 auto; padding: 44px 24px 64px; }
+
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase;
+      color: #8892b0; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #e8e8ed;
+    }
+
+    /* ── Before (intro) card ── */
+    .intro-card {
+      background: #fff; border-radius: 14px; padding: 28px 32px; margin-bottom: 36px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07); font-size: 15px; color: #374151;
+      border-left: 4px solid #cc2200;
+    }
+    .intro-card p + p { margin-top: 14px; }
+
+    /* ── Challenge rows ── */
+    .challenge-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+    .challenge-row {
+      background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      overflow: hidden; display: grid; grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 640px) { .challenge-row { grid-template-columns: 1fr; } }
+    .challenge-left  { padding: 18px 22px; border-right: 1px solid #f0f0f0; }
+    .challenge-right { padding: 18px 22px; background: #f7f7ff; }
+    .col-label { font-size: 10px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; margin-bottom: 8px; }
+    .col-label.pain-label { color: #cc2200; }
+    .col-label.sol-label  { color: #2a3aff; }
+    .challenge-left p, .challenge-right p { font-size: 14px; color: #374151; line-height: 1.55; }
+    .feature-tag {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      background: #eeeeff; color: #2a3aff; padding: 2px 10px; border-radius: 10px; margin-bottom: 7px;
+    }
+
+    /* ── After card ── */
+    .after-card {
+      border-radius: 14px; padding: 30px 34px; color: #fff; margin-bottom: 36px;
+      background:
+        radial-gradient(ellipse 70% 100% at 70% 0%,  #2a3aff 0%, transparent 60%),
+        radial-gradient(ellipse 50% 80%  at 0%  100%, #cc2200 0%, transparent 55%),
+        linear-gradient(150deg, #0d0d52 0%, #1a0066 50%, #1a0033 100%);
+    }
+    .after-card .section-label { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.12); }
+    .after-card p { font-size: 15px; color: rgba(255,255,255,0.82); line-height: 1.72; }
+    .after-card strong { color: #fff; }
+
+    /* ── Capabilities ── */
+    .cap-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; }
+    .cap-row {
+      background: #fff; border-radius: 10px; padding: 16px 22px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: grid; grid-template-columns: 2fr 3fr; gap: 24px; align-items: start;
+    }
+    @media (max-width: 640px) { .cap-row { grid-template-columns: 1fr; } }
+    .cap-need { font-size: 14px; font-weight: 600; color: #1a1a2e; padding-top: 2px; }
+    .cap-how  { font-size: 13px; color: #555; line-height: 1.55; }
+    .cap-how .feature-tag { margin-bottom: 5px; }
+
+    /* ── Next steps ── */
+    .steps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+    @media (max-width: 640px) { .steps-grid { grid-template-columns: 1fr; } }
+    .steps-col { background: #fff; border-radius: 12px; padding: 22px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .steps-col h4 {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase;
+      color: #8892b0; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #edf2f7;
+    }
+    .step-row {
+      display: flex; gap: 10px; padding: 9px 0;
+      border-bottom: 1px solid #f5f5f7; font-size: 13px; align-items: flex-start;
+    }
+    .step-row:last-child { border-bottom: none; }
+    .step-dot { width: 7px; height: 7px; border-radius: 50%; background: #2a3aff; flex-shrink: 0; margin-top: 5px; }
+    .sr-text { color: #374151; }
+
+    /* ── Team ── */
+    .team-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 36px; }
+    .team-card {
+      background: #fff; border-radius: 12px; padding: 18px 22px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      flex: 1; min-width: 200px; border-top: 3px solid #2a3aff;
+    }
+    .tc-avatar  { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; display: block; margin-bottom: 12px; border: 3px solid #eeeeff; }
+    .tc-name    { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+    .tc-role    { font-size: 12px; color: #2a3aff; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .tc-company { font-size: 12px; color: #888; }
+    .tc-email   { font-size: 12px; color: #2a3aff; margin-top: 4px; }
+
+    /* ── Footer ── */
+    .footer { text-align: center; padding: 24px; font-size: 12px; color: #aaa; border-top: 1px solid #e8e8ed; }
+    .footer strong { color: #555; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+
+    <div class="logo-row">
+      <div class="account-logo-wrap">
+        <img src="LOGO_B64" alt="ACCOUNT_NAME">
+      </div>
+      <div class="logo-divider"></div>
+      <div class="okta-brand">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(30  17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(60  17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(90  17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(120 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(150 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(180 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(210 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(240 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(270 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(300 17 17)"/>
+          <rect x="15.5" y="1" width="3" height="9" rx="1.5" fill="white" transform="rotate(330 17 17)"/>
+        </svg>
+        <span class="okta-text">okta</span>
+      </div>
+    </div>
+
+    <h1>Por que PRODUCT_AREA<br>para ACCOUNT_NAME?</h1>
+    <div class="subtitle">HERO_SUBTITLE</div>
+    <div class="hero-chips">
+      <!-- HERO_CHIPS: repeat per product area / date -->
+      <div class="chip"><strong>MONTH_YEAR</strong></div>
+      <div class="chip">PRODUCT_AREA</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- BEFORE SCENARIO -->
+  <div class="section-label">Cenário atual · O ponto de partida</div>
+  <div class="intro-card">
+    <p>BEFORE_P1</p>
+    <p>BEFORE_P2</p>
+  </div>
+
+  <!-- PAIN POINTS → OKTA RESOLUTION -->
+  <div class="section-label">Desafios identificados · Como o Okta resolve</div>
+  <div class="challenge-grid">
+
+    <!-- CHALLENGE_ROWS: copy and repeat per pain point -->
+    <div class="challenge-row">
+      <div class="challenge-left">
+        <div class="col-label pain-label">Desafio atual</div>
+        <p>PAIN_POINT_DESCRIPTION</p>
+      </div>
+      <div class="challenge-right">
+        <div class="col-label sol-label">Como o Okta resolve</div>
+        <div class="feature-tag">FEATURE_NAME</div>
+        <p>SOLUTION_DESCRIPTION</p>
+      </div>
+    </div>
+    <!-- END CHALLENGE_ROW -->
+
+  </div>
+
+  <!-- AFTER SCENARIO -->
+  <div class="after-card">
+    <div class="section-label">Estado futuro · Resultados de negócio</div>
+    <p>AFTER_PARAGRAPH</p>
+  </div>
+
+  <!-- REQUIRED CAPABILITIES + HOW OKTA DELIVERS -->
+  <div class="section-label">Capacidades necessárias · Como o Okta entrega</div>
+  <div class="cap-grid">
+
+    <!-- CAPABILITY_ROWS: copy and repeat per capability -->
+    <div class="cap-row">
+      <div class="cap-need">CAPABILITY_NAME</div>
+      <div class="cap-how">
+        <div class="feature-tag">FEATURE_TAG</div>
+        CAPABILITY_DESCRIPTION
+      </div>
+    </div>
+    <!-- END CAPABILITY_ROW -->
+
+  </div>
+
+  <!-- NEXT STEPS -->
+  <div class="section-label">Próximos passos</div>
+  <div class="steps-grid">
+    <div class="steps-col">
+      <h4>ACCOUNT_NAME</h4>
+      <!-- NEXT_STEPS_CUSTOMER: copy .step-row per action -->
+      <div class="step-row">
+        <div class="step-dot"></div>
+        <div class="sr-text">ACTION</div>
+      </div>
+    </div>
+    <div class="steps-col">
+      <h4>Okta</h4>
+      <!-- NEXT_STEPS_OKTA: copy .step-row per action -->
+      <div class="step-row">
+        <div class="step-dot"></div>
+        <div class="sr-text">ACTION</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEAM -->
+  <div class="section-label">Sua equipe Okta</div>
+  <div class="team-row">
+    <div class="team-card">
+      <img class="tc-avatar" src="SE_PHOTO_B64" alt="SE_NAME">
+      <div class="tc-name">SE_NAME</div>
+      <div class="tc-role">SE_ROLE</div>
+      <div class="tc-company">Okta · Brasil</div>
+      <div class="tc-email">SE_EMAIL</div>
+    </div>
+    <div class="team-card">
+      <img class="tc-avatar" src="AE_PHOTO_B64" alt="AE_NAME">
+      <div class="tc-name">AE_NAME</div>
+      <div class="tc-role">AE_ROLE</div>
+      <div class="tc-company">Okta · Brasil</div>
+      <div class="tc-email">AE_EMAIL</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>Okta, Inc.</strong> · FOOTER_TEXT
+</div>
+
+</body>
+</html>

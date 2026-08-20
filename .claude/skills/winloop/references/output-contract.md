@@ -95,92 +95,145 @@ Still hypothesis: [untested statements, unchanged and still labeled]
 
 ### Copy to Salesforce
 
-Always produce four separate blocks, even if a value is unknown, and end the layer with the review line shown below.
+Produce all blocks below in every Debrief. Each block maps to a field in the **Presales & Services Details** tab. Emit them in the order shown. End with the review line. Use `INPUT REQUIRED` when a value can only come from the SE; use `TBD` when a value exists but is not yet determined; use `Unknown` when evidence does not establish it.
 
 ```text
-Technical Win Forecast Date
+── PRESALES INFORMATION ──────────────────────────────────────────
+
+Pre-Sales confidence for Quarter
+[Low | Medium | High]
+
+Presales Stage
+[picklist value — see derivation rules below]
+
+Technical Differentiation
+[Positive | Neutral | Negative]
+
+Presales Concern
+[Product | Competition | Champion | Price | Process | TBD]
+
+Risks/Gaps
+[comma-separated subset of: D-Decision Process, P-Paper Process, P-Product, I-Identify Pain, C-Champion, C-Compelling Event — see derivation rules below]
+
+Technical Win Date
 [Exact date, or INPUT REQUIRED — exact date not established; known window: ...]
 
-SE Notes
-[YYYY-MM-DD WinLoop debrief] [Decision-focused note]
+POC Status
+[Not Required | Planned | In Progress | Completed]
 
-Next Steps
+── PRESALES NOTES ────────────────────────────────────────────────
+
+Pre-Sales Notes
+[YYYY-MM-DD initials: decision-focused note — prepend to existing field, do not replace]
+
+Pre-Sales Next Steps
 Customer:
 - [Action] — [Owner or TBD] — [Date or TBD]
 
 SE / Vendor:
 - [Action] — [Owner or TBD] — [Date or TBD]
 
-POC Required
-[Yes | No | TBD]
-Reason: [one sentence]
+── PRESALES REPORTING (checkboxes) ───────────────────────────────
+
+RFX
+[Yes | No]
+
+POC
+[Yes | No]
+
+SE Needed
+Yes
+
+Demo Platform Used
+[Yes | No]
+
+Mutual Delivery Plan
+[Yes | No]
+
+── REVIEW ────────────────────────────────────────────────────────
 
 Review each value against your own evidence before pasting — you own this record.
 ```
 
-#### Field-type paste guidance
+---
 
-- **Technical Win Forecast Date** is typically a Salesforce date picker: `INPUT REQUIRED — ...` cannot be entered there. When only a window is known, leave the date field unchanged in Salesforce and place the window plus the `INPUT REQUIRED` note at the top of SE Notes instead. Enter an exact date only when one is defensible under the decision model's date rules.
-- **POC Required** may be a picklist in your org: paste only the `Yes | No | TBD` value into the picklist and move the `Reason` sentence into SE Notes or Next Steps.
-- **SE Notes** is cumulative deal history in most orgs: prepend the dated `[YYYY-MM-DD WinLoop debrief]` stamp and append to the existing field content rather than replacing it.
+#### Derivation rules
 
-#### Technical Win Forecast Date
+##### Pre-Sales confidence for Quarter
+Map directly from forecast Confidence: `High` → `High`, `Medium` → `Medium`, `Low` → `Low`.
 
-- Output only a defensible value — or a user-directed date carrying the `user-directed date; no scheduled confirmation event` rationale with Confidence capped at Low (the field belongs to the SE; the label and cap are what make the output honest).
-- When a broad window is known but the field requires an exact date, preserve the window and request input.
-- A user-directed date with no scheduled confirmation event must carry the `user-directed date; no scheduled confirmation event` rationale in the forecast, with Confidence capped at Low.
-- Do not bury forecast uncertainty inside SE Notes.
+##### Presales Stage
+Derive from WinLoop status:
 
-#### SE Notes
+| WinLoop status | Presales Stage |
+|---|---|
+| Validation required — requirements still being established | 2 - Discovery & Technical Qualification |
+| Validation required — requirements known, proof route in progress | 3 - Solution Development |
+| Ready to ask | 4 - Validate Solution |
+| Confirmed | 4 - Validate Solution |
+| At risk | Hold at current stage; note risk in Pre-Sales Notes |
 
-Aim for 100–180 words unless the user supplies a character limit.
+When the current stage in Salesforce is already ahead of the derived stage, do not roll it back — note the discrepancy in Pre-Sales Notes and flag for AE alignment.
 
-When Technical Win Forecast Date is `INPUT REQUIRED`, the emitted SE Notes block itself must begin with the window plus the `INPUT REQUIRED` note — this is the text the SE pastes; the date block above stays as the review copy.
+##### Technical Differentiation
+- `Positive` — Okta has a defensible, evidence-backed advantage in areas the customer has confirmed as decision-critical.
+- `Neutral` — Competitive parity; no clear advantage or disadvantage established by the evidence.
+- `Negative` — A competitor holds a confirmed advantage in a decision-critical area, or a product gap exists that Okta cannot close within the evaluation window.
 
-Include:
+When no competitive signal exists in the evidence, default to `Neutral`.
 
-- meeting type and date when known;
-- relevant solution areas or use cases;
-- scoped customer confirmations with speaker roles;
-- explicit overall technical-win status;
-- decision-critical open criteria;
-- chosen validation route.
+##### Presales Concern
+Choose the single most decision-critical gap:
+- `Product` — capability unverified or confirmed gap.
+- `Competition` — competitor in active evaluation with a confirmed or likely advantage.
+- `Champion` — no internal sponsor with authority identified.
+- `Price` — commercial concern flagged by customer.
+- `Process` — decision process, approval chain, or procurement path undefined.
+- `TBD` — insufficient evidence to classify.
 
-Exclude:
+##### Risks/Gaps (multi-select — include all that apply)
+Map from WinLoop evidence using these rules:
 
-- a feature-by-feature meeting recap;
-- unsupported product or competitor claims;
-- routine discussion that does not affect the decision;
-- internal coaching language.
+| Include this code | When WinLoop evidence shows |
+|---|---|
+| D-Decision Process | Decision owner unidentified, decision timeline undefined, or evaluation criteria not agreed |
+| P-Paper Process | Procurement, legal, or contract path undefined |
+| P-Product | Any unverified capability, open accuracy flag, or confirmed product gap |
+| I-Identify Pain | Customer pain or requirements unattributed, unconfirmed, or stated by SE only |
+| C-Champion | No internal stakeholder with evaluation authority identified |
+| C-Compelling Event | No urgency driver, budget trigger, or deadline established |
 
-#### Next Steps
+Emit as a semicolon-separated string matching the picklist format, e.g.: `D-Decision Process;P-Product;C-Champion`
 
-Each step must contain:
+##### Technical Win Date
+- Exact date only when grounded in a scheduled confirmation event.
+- User-directed date: output it, label it `user-directed date; no scheduled confirmation event` in the forecast Rationale, cap Confidence at Low.
+- Window only known: `INPUT REQUIRED — exact date not established; known window: Q4 2026`. Place window in Pre-Sales Notes when the date picker cannot accept text.
 
-- action;
-- owner or `TBD`;
-- due date or `TBD`;
-- intended decision or success condition when useful.
+##### Pre-Sales Notes
+Aim for 100–180 words. Prepend `[YYYY-MM-DD initials:]` stamp and append to existing field — do not replace.
 
-Separate customer actions from SE/vendor actions.
+Include: meeting type and date; solution areas; scoped customer confirmations with speaker roles; overall technical-win status; decision-critical open criteria; chosen validation route.
 
-Include a technical-decision checkpoint:
+Exclude: feature-by-feature recap; unverified product or competitor claims; internal coaching language.
 
-```text
-Schedule the technical decision checkpoint and ask for explicit confirmation against the agreed requirements.
-```
+##### Pre-Sales Next Steps
+Each step: action — owner or `TBD` — due date or `TBD`. Separate customer from SE/vendor actions. Always include a technical-decision checkpoint step.
 
-#### POC Required
+##### POC (checkbox)
+`Yes` when chosen proof route is POC and bounded-POC conditions in the decision model are satisfied. `No` in all other cases — including when workshop or configuration session is the chosen route.
 
-The field value is exactly one of `Yes`, `No`, or `TBD` — nothing else. Nuance such as "not at this stage; revisit after the workshop" belongs in the `Reason` line, never in the field value.
+##### RFX (checkbox)
+`Yes` when the deal motion is RFP/RFI-driven (customer issued a formal request). `No` otherwise.
 
-Derive the value from the chosen `Shortest proof route` — do not judge it independently:
+##### Demo Platform Used (checkbox)
+`Yes` when a live demo, recorded demo, or hands-on workshop was part of the proof route in this or a prior session. `No` when only documentation or written clarification was used.
 
-- `No` when the chosen route is any rung below POC: the known decision-critical uncertainty can be resolved without one. Outstanding inputs or criteria that may still emerge (for example, a pending requirements list) do not make this `TBD` — note them in `Reason` and revisit only if a POC-worthy uncertainty later appears.
-- `Yes` only when the chosen route is POC and the bounded-POC conditions in the decision model are satisfied.
-- `TBD` only when no proof route can be chosen yet because the decision-critical uncertainty itself is unidentified (no route chosen means nothing below POC has been ruled in).
+##### Mutual Delivery Plan (checkbox)
+`Yes` only when an MDP has been agreed and signed. `No` or omit until then.
 
-When `No`, name the recommended alternative in `Reason`.
+##### SE Needed (checkbox)
+Always `Yes` when SE is actively engaged.
 
 ## Prepare
 

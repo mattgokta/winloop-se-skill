@@ -1,6 +1,10 @@
 # Live deal data — never in public repo
 opportunities/
 
+# Personal team assets and account-specific Drive config — populate locally
+.claude/skills/winloop/team.json
+.claude/skills/winloop/drive-mapping.json
+
 # Local Claude Code settings
 .claude/settings.local.json
 
