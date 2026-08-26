@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.5.1 — 2026-08-26
+
+Two contract gaps closed; suite returns to 20/20 with zero gate failures on a complete run.
+
+- **`Exact customer ask` must address the gap that is actually blocking.** The contract specified only the technical shape — a confirmation question anchored to agreed requirements. When the decision-critical gap is *structural* (no identified evaluation owner, no defined decision process or forum), that shape cannot produce a win: nobody present has the standing to give one. The ask must now surface the structural gap too, and naming the owner in `Next Steps` alone does not satisfy it.
+- **Prepare emits its six sections and nothing else.** Runs were borrowing a classification line from Debrief ("Working status: Validation required") and an evidence-posture layer from Message. Prepare looks forward at a meeting that has not happened, so there is nothing to classify: no status line, no provisional status, no evidence posture, no `Customer evidence`, and no Salesforce layer unless the SE explicitly asks.
+
+Both are the same failure shape as the derivation fixes in v1.3.1 and v1.5.0: the contract described the common case and stayed silent on a legitimate variant, and the model filled the silence with something plausible. Where a rule has a variant, name the variant.
+
+**Baseline:** 20/20, zero gate failures, `COMPLETE` marker present, 20 summary rows. The suite is LLM-judged and non-deterministic — across nine runs, cases 03, 05, 09, 11, and 17 each flipped at least once before their underlying gap was closed. Expect occasional single-case failures on judgment-heavy items (D4, C1, U9) and re-run before treating one as a regression.
+
 ## v1.5.0 — 2026-08-26
 
 Bounded validation plan template, multi-language rules, and a gate regression fix.

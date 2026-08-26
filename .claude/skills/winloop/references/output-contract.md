@@ -84,6 +84,7 @@ Next best action:
 Rules:
 
 - Keep `Customer evidence` scoped; do not treat feature interest as confirmation, and state each speaker's role and authority basis when status depends on it.
+- The `Exact customer ask` must address the decision-critical gap that is actually blocking. When that gap is technical, anchor the question to the agreed requirements. When the gap is **structural** — no identified evaluation owner, no defined decision process or forum — the ask must surface that too: a perfectly phrased requirements-confirmation question asked into an undefined decision process cannot produce a win, because nobody present has the standing to give one. Naming the owner or the forum in `Next Steps` alone does not satisfy this; it belongs in the ask.
 - List only decision-critical gaps under `Still unproven`.
 - If the workshop was mentioned only as uncertain recollection, write `Workshop likely offered; confirm from call evidence`.
 - Put product-claim corrections under `Accuracy flags`, not inside customer evidence. Assert falsity only for logically certain errors; phrase everything else as `Needs verification`.
@@ -330,6 +331,8 @@ Exact technical-win ask:
 Fallback route:
 [smallest next proof step if confirmation is not yet defensible]
 ```
+
+These six sections are the entire Prepare output. Prepare looks forward at a meeting that has not happened, so there is nothing yet to classify: emit no `Status` line, no working or provisional status, no evidence posture, no `Customer evidence` section, and no Salesforce layer unless the SE explicitly asks for a CRM update. Borrowing a classification line from Debrief states a conclusion the evidence cannot support yet.
 
 If a Message study exists, use its Before Scenario, Positive Business Outcomes, Required Capabilities, and metrics as discovery hypotheses. Do not present them as customer-confirmed facts.
 
