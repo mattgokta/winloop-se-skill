@@ -18,9 +18,29 @@ Salesforce blocks are always produced in Debrief. In every other mode, produce t
 
 ## Language
 
-Write the output in the language of the user's request. Verbatim customer quotes stay in their original language. Honor an explicit per-section override such as "Salesforce fields in English." If the request and the source material are in different languages and no preference is stated, produce the Salesforce blocks in the language of the user's request and note the choice.
+Three layers take their language from three different sources. Do not collapse them — the SE, the CRM, and the customer are frequently not working in the same language.
 
-Exception: Salesforce field labels and every enumerated value — picklists, checkboxes, stage names, sentinels, and the codes in Risks/Gaps — are always emitted verbatim in their canonical English form regardless of output language; the CRM will not accept translations. Only free-text fields (Pre-Sales Notes, Pre-Sales Next Steps) follow the request language.
+| Layer | Language | Source |
+|---|---|---|
+| SE Decision Assist | the SE's working language | the language of the user's request |
+| Copy to Salesforce | **always English** | fixed |
+| Customer-facing artifacts | the **customer's** language | the customer, not the request |
+
+**Salesforce is always English, without exception** — regardless of the request language or the language of the source material. A shared CRM is read across regions and by people who did not attend the call; one language is what makes a book of business comparable and the measurement plan possible. This is not a default to be overridden.
+
+**Customer-facing artifacts follow the customer.** Infer that language from what the customer actually used in the transcript or their own written material, falling back to the account's country. Never inherit it from the SE's request language: an SE writing an English request for a Portuguese-speaking account still produces a Portuguese document. State the inferred language in one line so the SE can correct it in a word.
+
+Verbatim customer quotes stay in their original language in every layer — a translated quote is no longer a quote, and scoping a confirmation exactly is the whole job. Inside the always-English Salesforce layer, keep the quote verbatim and add a short English gloss:
+
+```text
+IT Director: "esse é o principal argumento de venda" ("this is the main selling argument")
+```
+
+Gloss only the quotes that carry the confirmation; render the rest as English paraphrase. Pre-Sales Notes has a 100–180 word budget, and bilingual quoting will consume it.
+
+**Never translate**, in any layer or language: Salesforce field labels; every enumerated value (picklists, checkboxes, stage names, sentinels, and the `Risks/Gaps` codes); product names such as `Okta Access Gateway`; and the literal `WinLoop` token in the notes stamp. These are identifiers rather than prose — a translated picklist value will not paste into the CRM, and a translated stamp token breaks the tagging the measurement plan depends on.
+
+Honor an explicit per-section override when the SE gives one.
 
 ## Message
 
@@ -250,13 +270,13 @@ Derive from the chosen `Shortest proof route` — do not judge it independently:
 - `In Progress` / `Completed` only when the evidence explicitly shows a POC underway or finished.
 - `TBD` whenever no proof route can yet be settled — whether because the decision-critical uncertainty is unidentified, **or because the uncertainty is known but the route to resolve it cannot be fixed yet** (for example, the customer demands validation without agreeing to a bounded proposition, or the scope needed to size the route is still open). Emit the sentinel `TBD`, leave the CRM picklist unchanged, and record the open question in Pre-Sales Notes (the Salesforce picklist has no TBD value).
 
-  Operational test, applied strictly in this order — step 1 decides before step 2 is considered:
+  Operational test, applied strictly in this order. Each step decides before the next is considered — the ordering is the rule, not a suggestion:
 
   1. **Is the decision-critical uncertainty identified?** If discovery still has to establish what actually needs proving, the value is `TBD`, whatever route the output sketches for afterwards. A route proposed on top of an unidentified uncertainty is a plan for discovery, not a settled proof route — naming a demo does not settle a question nobody has framed yet.
-  2. **Otherwise, does `Shortest proof route` name a route the SE can act on** — send documentation, run a demo, hold a configuration session, schedule a workshop? Then it is settled: `Not Required` for any rung below POC, `Planned` for a bounded POC. The SE does not need the customer's prior agreement for this; choosing the rung is the SE's call.
-  3. **Otherwise** — the uncertainty is identified, but the customer's posture blocks route selection (they demand validation and will not agree to a bounded proposition) — `TBD`.
+  2. **Is the customer demanding validation they have not agreed to bound?** When a customer has made in-environment proof a condition of their sign-off, and the scope, success criteria, environment, or exit decision are still unagreed, the value is `TBD` — even when the SE has already named a route they could execute. A route the SE proposes does not settle a demand the customer controls. Recording `Not Required` here tells the CRM the validation question is closed at the exact moment the customer has opened it.
+  3. **Otherwise, does `Shortest proof route` name a route the SE can act on** — send documentation, run a demo, hold a configuration session, schedule a workshop? Then it is settled: `Not Required` for any rung below POC, `Planned` for a bounded POC. The SE does not need the customer's prior agreement for this; choosing the rung is the SE's call.
 
-  Past step 1, when in doubt and a concrete route is named, use `Not Required`.
+  Past steps 1 and 2, when in doubt and a concrete route is named, use `Not Required`.
 
 When `Not Required`, name the recommended alternative route in Pre-Sales Notes.
 

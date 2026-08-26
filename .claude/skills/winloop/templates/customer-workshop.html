@@ -8,9 +8,9 @@
     ACCOUNT_NAME          — e.g. "Acme Corp"
     LOGO_B64              — base64 PNG/JPG of customer logo (data:image/png;base64,...)
                             Tip: curl -sL <logo_url> | base64 | tr -d '\n'
-    WORKSHOP_DATE         — e.g. "14 de março de 2027" (always a fictional date in examples)
-    WORKSHOP_FORMAT       — e.g. "Hands-on · ~4 horas"
-    WORKSHOP_LOCATION     — e.g. "Escritório ACCOUNT_NAME · São Paulo"
+    WORKSHOP_DATE         — e.g. "March 14, 2027" (always a fictional date in examples)
+    WORKSHOP_FORMAT       — e.g. "Hands-on · ~4 hours"
+    WORKSHOP_LOCATION     — e.g. "ACCOUNT_NAME office · Sao Paulo"
     PRODUCT_AREA          — e.g. "Okta IGA" / "Okta Workforce Identity" / "Okta CIAM"
     SE_NAME               — Solutions Engineer full name
     AE_NAME               — Account Executive full name
@@ -19,20 +19,35 @@
     BRING_LEFT / BRING_RIGHT — two .bring-card blocks (logistics + use cases)
     NEXT_STEPS_CUSTOMER   — .step-row blocks for customer actions
     NEXT_STEPS_OKTA       — .step-row blocks for SE/vendor actions
-    FOOTER_TEXT           — e.g. "Preparado exclusivamente para ACCOUNT_NAME · Workshop de WORKSHOP_DATE"
+    FOOTER_TEXT           — e.g. "Prepared exclusively for ACCOUNT_NAME · Workshop on WORKSHOP_DATE"
+    TEAM_REGION           — e.g. "Okta" or "Okta · Brazil"
+    INTRO_P1 / INTRO_P2   — opening paragraphs; see the commercial-claims note below
+    AFTER_WORKSHOP_NOTE   — what happens to the environment afterwards; see note below
 
   CHALLENGE_ROW example:
     <div class="challenge-row">
       <div class="challenge-left">
-        <div class="col-label pain-label">Desafio atual</div>
+        <div class="col-label pain-label">Current challenge</div>
         <p>PAIN_POINT_DESCRIPTION</p>
       </div>
       <div class="challenge-right">
-        <div class="col-label sol-label">Como o Okta resolve</div>
+        <div class="col-label sol-label">How Okta addresses it</div>
         <div class="feature-tag">OKTA_FEATURE_NAME</div>
         <p>SOLUTION_DESCRIPTION</p>
       </div>
     </div>
+
+  ON INTRO_P2 AND AFTER_WORKSHOP_NOTE — these describe what happens to the
+  environment after the session. Tenant-persistence and trial-to-production
+  language is a commercial claim, not a technical one: include it only when it has
+  been confirmed for THIS account, and leave the paragraph out entirely when it has
+  not. An unconfirmed promise here is exactly the "unconfirmed capability claim"
+  the output contract forbids in customer-facing artifacts.
+
+  LANGUAGE — this template is English-canonical. When generating for a customer who
+  works in another language, translate EVERY visible string, not only the
+  placeholders: section labels, column headers, card titles, and chips. Set the
+  <html lang> attribute to match, and render dates in the target locale.
 
   AGENDA_ITEM example:
     <div class="agenda-item">
@@ -43,11 +58,11 @@
       </div>
     </div>
 -->
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Workshop PRODUCT_AREA — ACCOUNT_NAME | WORKSHOP_DATE</title>
+  <title>PRODUCT_AREA Workshop — ACCOUNT_NAME | WORKSHOP_DATE</title>
   <style>
     /* Self-contained by design: no external font/asset loads (a customer opening
        this file must trigger zero outbound requests). System stack below. */
@@ -260,12 +275,12 @@
       </div>
     </div>
 
-    <h1>Workshop de PRODUCT_AREA</h1>
+    <h1>PRODUCT_AREA Workshop</h1>
     <div class="subtitle">Uma sessão prática para conhecer, configurar e validar o Okta no ambiente de vocês</div>
     <div class="hero-chips">
-      <div class="chip"><strong>Data:</strong> WORKSHOP_DATE</div>
-      <div class="chip"><strong>Formato:</strong> WORKSHOP_FORMAT</div>
-      <div class="chip"><strong>Local:</strong> WORKSHOP_LOCATION</div>
+      <div class="chip"><strong>Date:</strong> WORKSHOP_DATE</div>
+      <div class="chip"><strong>Format:</strong> WORKSHOP_FORMAT</div>
+      <div class="chip"><strong>Location:</strong> WORKSHOP_LOCATION</div>
     </div>
 
   </div>
@@ -275,22 +290,22 @@
 
   <!-- INTRO — customize the two paragraphs -->
   <div class="intro-card">
-    <p>Preparamos esta sessão com base nos desafios que vocês nos compartilharam. O objetivo não é apenas mostrar slides — vamos <strong>colocar a mão na massa juntos</strong>: configurar fluxos, integrar aplicações e sair do dia com casos de uso reais funcionando no ambiente de vocês.</p>
-    <p>Ao final da sessão, o tenant configurado durante o workshop continua ativo e pode evoluir para o ambiente de produção — eliminando retrabalho de implementação caso vocês decidam avançar com a plataforma.</p>
+    <p>INTRO_P1</p>
+    <p>INTRO_P2</p>
   </div>
 
   <!-- CHALLENGE ROWS — one block per pain point from the WinLoop debrief -->
-  <div class="section-label">Seus desafios · Como o Okta resolve</div>
+  <div class="section-label">Your challenges · How Okta addresses them</div>
   <div class="challenge-grid">
 
     <!-- COPY AND REPEAT THIS BLOCK FOR EACH PAIN POINT -->
     <div class="challenge-row">
       <div class="challenge-left">
-        <div class="col-label pain-label">Desafio atual</div>
+        <div class="col-label pain-label">Current challenge</div>
         <p>PAIN_POINT_DESCRIPTION</p>
       </div>
       <div class="challenge-right">
-        <div class="col-label sol-label">Como o Okta resolve</div>
+        <div class="col-label sol-label">How Okta addresses it</div>
         <div class="feature-tag">OKTA_FEATURE_NAME</div>
         <p>SOLUTION_DESCRIPTION</p>
       </div>
@@ -300,7 +315,7 @@
   </div>
 
   <!-- AGENDA — one block per session segment -->
-  <div class="section-label">Agenda do Workshop · WORKSHOP_DATE</div>
+  <div class="section-label">Workshop agenda · WORKSHOP_DATE</div>
   <div class="agenda-card">
     <div class="agenda-header">
       <h3>WORKSHOP_FORMAT</h3>
@@ -322,11 +337,11 @@
   </div>
 
   <!-- PREPARATION -->
-  <div class="section-label">Preparação para o dia</div>
+  <div class="section-label">Preparing for the day</div>
   <div class="bring-grid">
     <div class="bring-card">
       <div class="bc-icon">💻</div>
-      <h4>Logística</h4>
+      <h4>Logistics</h4>
       <ul>
         <!-- BRING_LEFT items -->
         <li>ITEM</li>
@@ -334,7 +349,7 @@
     </div>
     <div class="bring-card">
       <div class="bc-icon">📋</div>
-      <h4>Casos de uso da equipe</h4>
+      <h4>Team use cases</h4>
       <ul>
         <!-- BRING_RIGHT items -->
         <li>ITEM</li>
@@ -344,12 +359,12 @@
 
   <!-- AFTER -->
   <div class="after-card">
-    <div class="section-label">Após o workshop</div>
-    <p>O tenant configurado durante a sessão <strong>permanece ativo</strong> e pode ser evoluído continuamente. Caso vocês decidam avançar com a plataforma, esse mesmo tenant pode se tornar o ambiente de produção — sem necessidade de reconfigurar do zero, reduzindo significativamente o tempo de implementação.</p>
+    <div class="section-label">After the workshop</div>
+    <p>AFTER_WORKSHOP_NOTE</p>
   </div>
 
   <!-- NEXT STEPS -->
-  <div class="section-label">Próximos passos</div>
+  <div class="section-label">Next steps</div>
   <div class="steps-grid">
     <div class="steps-col">
       <h4>ACCOUNT_NAME</h4>
@@ -376,17 +391,17 @@
   </div>
 
   <!-- TEAM -->
-  <div class="section-label">Sua equipe Okta</div>
+  <div class="section-label">Your Okta team</div>
   <div class="team-row">
     <div class="team-card">
       <div class="tc-name">SE_NAME</div>
       <div class="tc-role">Solutions Engineer</div>
-      <div class="tc-company">Okta · Brasil</div>
+      <div class="tc-company">TEAM_REGION</div>
     </div>
     <div class="team-card">
       <div class="tc-name">AE_NAME</div>
       <div class="tc-role">Account Executive</div>
-      <div class="tc-company">Okta · Brasil</div>
+      <div class="tc-company">TEAM_REGION</div>
     </div>
   </div>
 

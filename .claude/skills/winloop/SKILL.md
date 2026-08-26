@@ -1,6 +1,6 @@
 ---
 name: winloop
-version: "1.4.0"
+version: "1.5.0"
 description: Turn SE account context, APEX or Command of the Message requests, completed meeting notes, transcripts, demo summaries, and opportunity updates into a concise value message, defensible technical-win status, shortest proof path, exact customer ask, forecast guidance, and separate Salesforce-ready fields. Use for message studies without Gong, SE meeting preparation, call debriefs, technical validation planning, workshop-versus-POC decisions, and technical-win forecasting. Do not use for plain meeting summarization, translation, or note cleanup that does not require a technical-win decision.
 argument-hint: "[message | prepare | debrief | checkpoint] plus pasted notes or context"
 ---
@@ -43,7 +43,7 @@ If the invocation carries no notes, no context, and no mode word, do not emit a 
 
 Always produce the full output for the selected mode, representing missing values with the defined sentinels — `INPUT REQUIRED` inside a field is the standard way to ask. Append at most one clarifying question, and only when the answer would materially change the message, status, forecast, proof route, or a CRM value. Never withhold the output while waiting for an answer.
 
-Respond in the language of the user's request. Verbatim customer quotes stay in their original language. The user may override the output language for any section (for example, "Salesforce fields in English").
+Language runs on three independent slots, defined in the output contract: SE Decision Assist follows the user's request language, **Salesforce is always English without exception**, and customer-facing artifacts follow the customer's own language rather than the SE's. Verbatim customer quotes always stay in their original language, glossed in English inside the Salesforce layer. Enumerated values, product names, and the `WinLoop` stamp token are identifiers and are never translated.
 
 ## Pull from a meeting tool
 
@@ -147,7 +147,10 @@ On request, generate account artifacts into the account's `<ledger root>/<accoun
 - Route each customer-facing artifact to its template in this skill's `templates/` folder:
   - `templates/customer-apex-value.html` — the base for "Why Okta" / value / leave-behind documents produced from a debrief or message study; fill the placeholders documented in its header comment.
   - `templates/customer-workshop.html` — the base for workshop, agenda, and session-prep pages.
+  - `templates/customer-poc-plan.html` — the base for a POC or bounded in-environment validation plan, whenever the chosen proof route is POC or a scoped validation the customer has demanded.
   - When neither fits, build a self-contained branded HTML page consistent with the templates' style rather than improvising unbranded output.
-- Hardcoded template copy (including pt-BR defaults) must be adapted to the customer's language and account, not just the placeholders; tenant-persistence or conversion promises may appear only when commercially confirmed for the account.
+- The POC plan template is the decision model's bounded-POC checklist made fillable: every section maps to a condition that must hold before a POC is justified. A section that cannot be filled means the validation is not yet bounded — go back and agree that piece with the customer rather than sending a document with a gap in it. Its exit-decision section carries the technical-win ask, agreed in advance rather than asked hopefully at the end.
+- The templates are English-canonical. When the customer works in another language, translate **every visible string** — section labels, column headers, card titles, chips — not only the placeholders, set the `<html lang>` attribute to match, and render dates in the target locale. A document mixing English chrome with translated content is a defect.
+- Tenant-persistence, trial-to-production, and other commercial promises appear only when confirmed for that account; otherwise leave the paragraph out entirely.
 - If `team.json` exists in this skill's folder, inject its contact fields and photos into the templates' team cards (and use `se_initials` for the Pre-Sales Notes stamp). When it is absent, leave the placeholders and tell the user to copy `team.json.example` to `team.json` and fill it in.
 - Make HTML artifacts self-contained: inline CSS, embed images as base64, and no external font or asset references — a customer opening the file must trigger zero outbound requests.

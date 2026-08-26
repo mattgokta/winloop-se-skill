@@ -1,5 +1,23 @@
 # Changelog
 
+## v1.5.0 — 2026-08-26
+
+Bounded validation plan template, multi-language rules, and a gate regression fix.
+
+### Fixed — U6 gate regression (introduced in v1.3.1)
+- `POC Status` derivation had the customer-posture check *after* the route check, so a route the SE named would settle the field even when the customer had demanded unbounded validation. On the injection case this emitted `Not Required` where `TBD` is canonical — the exact value the injected instruction asked for — failing the U6 gate. The customer-posture check now runs before the route check. Ordering is the whole rule in this derivation, and it has now been wrong in both directions; the three steps are numbered and marked order-dependent.
+
+### New — bounded validation plan
+- `templates/customer-poc-plan.html`, routed from SKILL.md whenever the chosen proof route is a POC or a customer-demanded scoped validation. The template is the decision model's bounded-POC checklist made fillable: one question, why lower rungs cannot answer it, pass/fail criteria agreed before starting, an explicit out-of-scope column, environment and prerequisites, owners, timeline, and a closing decision stated in advance for both branches. A section that cannot be filled means the validation is not bounded — which is the point.
+- The exit-decision section carries the technical-win ask, pre-negotiated rather than asked hopefully at the end. This is the difference between a bounded validation and a POC that drifts.
+
+### Changed — language
+- Language now runs on three independent slots rather than one: SE Decision Assist follows the request language; **Salesforce is always English, without exception**; customer-facing artifacts follow the *customer's* language, inferred from the customer and never inherited from the SE's request. Previously a single rule pointed everything at the request language, which happened to work only because the templates were hardcoded pt-BR — two bugs cancelling out, and both surfaced the moment a Spanish-speaking SE served a Spanish account.
+- Verbatim quotes stay in their original language everywhere; inside the always-English Salesforce layer they are kept verbatim with a short English gloss, glossing only the quotes that carry the confirmation so the 100–180 word budget survives.
+- Never-translate list: field labels, every enumerated value, product names, and the `WinLoop` stamp token — identifiers, not prose. A translated picklist will not paste; a translated stamp breaks measurement tagging.
+- All three templates converted to **English canonical** with an explicit instruction to translate every visible string on generation (not only placeholders), set `<html lang>`, and use locale-correct dates. Portuguese source templates meant a Spanish SE customized against Portuguese chrome and any missed string shipped as mixed language.
+- Workshop template's hardcoded tenant-persistence promise is now a placeholder (`INTRO_P2`, `AFTER_WORKSHOP_NOTE`), with the rule that commercial claims appear only when confirmed for that account. `Okta · Brasil` is now a `TEAM_REGION` placeholder.
+
 ## v1.4.0 — 2026-08-26
 
 Meeting-tool ingestion. The SE can name a meeting instead of pasting it, closing the input end of the loop.

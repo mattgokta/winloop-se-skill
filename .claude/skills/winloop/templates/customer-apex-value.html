@@ -15,7 +15,7 @@
     LOGO_B64            — data:image/png;base64,... or data:image/jpeg;base64,...
                           Tip: curl -sL <url> | base64 | tr -d '\n'
     PRODUCT_AREA        — e.g. "Okta PAM" / "Okta IGA" / "Okta Workforce Identity"
-    MONTH_YEAR          — e.g. "Agosto 2026"
+    MONTH_YEAR          — e.g. "August 2026"
     HERO_CHIPS          — repeat .chip blocks (product areas, date)
     BEFORE_P1           — first paragraph of Before Scenario
     BEFORE_P2           — second paragraph of Before Scenario (optional; remove if not needed)
@@ -32,16 +32,22 @@
     AE_ROLE             — e.g. "Account Executive"
     AE_EMAIL            — e.g. "name@okta.com"
     AE_PHOTO_B64        — data:image/jpeg;base64,...
-    FOOTER_TEXT         — e.g. "Preparado exclusivamente para ACCOUNT_NAME · MONTH_YEAR"
+    FOOTER_TEXT         — e.g. "Prepared exclusively for ACCOUNT_NAME · MONTH_YEAR"
+    TEAM_REGION         — e.g. "Okta" or "Okta · Brazil"
+
+  LANGUAGE — this template is English-canonical. When generating for a customer who
+  works in another language, translate EVERY visible string, not only the
+  placeholders: section labels, column headers, card titles, and chips. Set the
+  <html lang> attribute to match, and render dates in the target locale.
 
   CHALLENGE_ROW example:
     <div class="challenge-row">
       <div class="challenge-left">
-        <div class="col-label pain-label">Desafio atual</div>
+        <div class="col-label pain-label">Current challenge</div>
         <p>PAIN_POINT_DESCRIPTION</p>
       </div>
       <div class="challenge-right">
-        <div class="col-label sol-label">Como o Okta resolve</div>
+        <div class="col-label sol-label">How Okta addresses it</div>
         <div class="feature-tag">FEATURE_NAME</div>
         <p>SOLUTION_DESCRIPTION</p>
       </div>
@@ -64,11 +70,11 @@
   - Write in the customer's language
   - Make HTML self-contained: all CSS inline, images as base64
 -->
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Por que PRODUCT_AREA — ACCOUNT_NAME · MONTH_YEAR</title>
+  <title>Why PRODUCT_AREA — ACCOUNT_NAME · MONTH_YEAR</title>
   <style>
     /* Self-contained by design: no external font/asset loads (a customer opening
        this file must trigger zero outbound requests). System stack below. */
@@ -243,7 +249,7 @@
       </div>
     </div>
 
-    <h1>Por que PRODUCT_AREA<br>para ACCOUNT_NAME?</h1>
+    <h1>Why PRODUCT_AREA<br>for ACCOUNT_NAME?</h1>
     <div class="subtitle">HERO_SUBTITLE</div>
     <div class="hero-chips">
       <!-- HERO_CHIPS: repeat per product area / date -->
@@ -257,24 +263,24 @@
 <div class="page">
 
   <!-- BEFORE SCENARIO -->
-  <div class="section-label">Cenário atual · O ponto de partida</div>
+  <div class="section-label">Current state · Where you are today</div>
   <div class="intro-card">
     <p>BEFORE_P1</p>
     <p>BEFORE_P2</p>
   </div>
 
   <!-- PAIN POINTS → OKTA RESOLUTION -->
-  <div class="section-label">Desafios identificados · Como o Okta resolve</div>
+  <div class="section-label">Identified challenges · How Okta addresses them</div>
   <div class="challenge-grid">
 
     <!-- CHALLENGE_ROWS: copy and repeat per pain point -->
     <div class="challenge-row">
       <div class="challenge-left">
-        <div class="col-label pain-label">Desafio atual</div>
+        <div class="col-label pain-label">Current challenge</div>
         <p>PAIN_POINT_DESCRIPTION</p>
       </div>
       <div class="challenge-right">
-        <div class="col-label sol-label">Como o Okta resolve</div>
+        <div class="col-label sol-label">How Okta addresses it</div>
         <div class="feature-tag">FEATURE_NAME</div>
         <p>SOLUTION_DESCRIPTION</p>
       </div>
@@ -285,12 +291,12 @@
 
   <!-- AFTER SCENARIO -->
   <div class="after-card">
-    <div class="section-label">Estado futuro · Resultados de negócio</div>
+    <div class="section-label">Future state · Business outcomes</div>
     <p>AFTER_PARAGRAPH</p>
   </div>
 
   <!-- REQUIRED CAPABILITIES + HOW OKTA DELIVERS -->
-  <div class="section-label">Capacidades necessárias · Como o Okta entrega</div>
+  <div class="section-label">Required capabilities · How Okta delivers</div>
   <div class="cap-grid">
 
     <!-- CAPABILITY_ROWS: copy and repeat per capability -->
@@ -306,7 +312,7 @@
   </div>
 
   <!-- NEXT STEPS -->
-  <div class="section-label">Próximos passos</div>
+  <div class="section-label">Next steps</div>
   <div class="steps-grid">
     <div class="steps-col">
       <h4>ACCOUNT_NAME</h4>
@@ -327,20 +333,20 @@
   </div>
 
   <!-- TEAM -->
-  <div class="section-label">Sua equipe Okta</div>
+  <div class="section-label">Your Okta team</div>
   <div class="team-row">
     <div class="team-card">
       <img class="tc-avatar" src="SE_PHOTO_B64" alt="SE_NAME">
       <div class="tc-name">SE_NAME</div>
       <div class="tc-role">SE_ROLE</div>
-      <div class="tc-company">Okta · Brasil</div>
+      <div class="tc-company">TEAM_REGION</div>
       <div class="tc-email">SE_EMAIL</div>
     </div>
     <div class="team-card">
       <img class="tc-avatar" src="AE_PHOTO_B64" alt="AE_NAME">
       <div class="tc-name">AE_NAME</div>
       <div class="tc-role">AE_ROLE</div>
-      <div class="tc-company">Okta · Brasil</div>
+      <div class="tc-company">TEAM_REGION</div>
       <div class="tc-email">AE_EMAIL</div>
     </div>
   </div>
