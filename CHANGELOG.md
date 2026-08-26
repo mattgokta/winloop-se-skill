@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.6.1 — 2026-08-26
+
+Repository hygiene. **No changes to the skill** — SKILL.md, references, and templates are byte-identical to v1.6.0.
+
+- Removed three internal artifacts that did not belong in a public skill repository: `HACKATHON_PITCH.md`, `hackathon_submission_Matt_Gueiros.html`, and `recording-script.md`. They were internal pitch and demo material rather than part of the skill, and an adopter cloning this repo has no use for them.
+- The account narratives in the submission page had already been de-identified, so this is a scope decision rather than a data-exposure fix. The files remain in git history; removing them from history as well would require another force-push and is a separate decision.
+
 ## v1.6.0 — 2026-08-26
 
 New customer-facing artifact type, plus a capability-map correction found in live use.
