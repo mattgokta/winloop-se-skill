@@ -1,6 +1,6 @@
 ---
 name: winloop
-version: "1.5.1"
+version: "1.6.0"
 description: Turn SE account context, APEX or Command of the Message requests, completed meeting notes, transcripts, demo summaries, and opportunity updates into a concise value message, defensible technical-win status, shortest proof path, exact customer ask, forecast guidance, and separate Salesforce-ready fields. Use for message studies without Gong, SE meeting preparation, call debriefs, technical validation planning, workshop-versus-POC decisions, and technical-win forecasting. Do not use for plain meeting summarization, translation, or note cleanup that does not require a technical-win decision.
 argument-hint: "[message | prepare | debrief | checkpoint] plus pasted notes or context"
 ---
@@ -148,9 +148,11 @@ On request, generate account artifacts into the account's `<ledger root>/<accoun
   - `templates/customer-apex-value.html` — the base for "Why Okta" / value / leave-behind documents produced from a debrief or message study; fill the placeholders documented in its header comment.
   - `templates/customer-workshop.html` — the base for workshop, agenda, and session-prep pages.
   - `templates/customer-poc-plan.html` — the base for a POC or bounded in-environment validation plan, whenever the chosen proof route is POC or a scoped validation the customer has demanded.
+  - `templates/customer-session-recap.html` — the base for a post-session technical response: what the customer raised, how each item is addressed, what was demonstrated, and what remains in joint definition. Reach for it when the customer is drafting requirements, a specification, or an RFP, when stakeholders were absent, or when a multi-session evaluation needs consolidating. Because customers routinely lift this document into their own specification, build it only from capabilities the ledger records as `Verified` or `Platform verified` — every sentence in it may become an evaluation criterion someone is later held to.
   - When neither fits, build a self-contained branded HTML page consistent with the templates' style rather than improvising unbranded output.
 - The POC plan template is the decision model's bounded-POC checklist made fillable: every section maps to a condition that must hold before a POC is justified. A section that cannot be filled means the validation is not yet bounded — go back and agree that piece with the customer rather than sending a document with a gap in it. Its exit-decision section carries the technical-win ask, agreed in advance rather than asked hopefully at the end.
 - The templates are English-canonical. When the customer works in another language, translate **every visible string** — section labels, column headers, card titles, chips — not only the placeholders, set the `<html lang>` attribute to match, and render dates in the target locale. A document mixing English chrome with translated content is a defect.
 - Tenant-persistence, trial-to-production, and other commercial promises appear only when confirmed for that account; otherwise leave the paragraph out entirely.
+- A capability the customer has raised no requirement for does not belong in a customer-facing artifact at all. Including it converts unrequested scope into expected scope, and someone later has to defend a line nobody asked for.
 - If `team.json` exists in this skill's folder, inject its contact fields and photos into the templates' team cards (and use `se_initials` for the Pre-Sales Notes stamp). When it is absent, leave the placeholders and tell the user to copy `team.json.example` to `team.json` and fill it in.
 - Make HTML artifacts self-contained: inline CSS, embed images as base64, and no external font or asset references — a customer opening the file must trigger zero outbound requests.

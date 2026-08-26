@@ -107,7 +107,9 @@ The overall `Status` is the most conservative state across decision-critical are
 
 Rules:
 
-- `Verified` requires a citable current source (official documentation or an authoritative internal reference); otherwise the state is `Unconfirmed`.
+- `Unconfirmed` means **the platform capability itself is in doubt** — nobody has established that the product can do this. It does not mean "not yet demonstrated to this customer in depth", "shown only at overview level", or "scheduled for the next session". A shipping, documented capability is never `Unconfirmed` merely because this account has not seen it demonstrated end to end; that is `Platform verified`, with the remaining customer-specific design named as implementation scope. Marking shipped capabilities `Unconfirmed` inflates technical risk in the forecast and misdirects the proof route toward things that need no proving.
+- A capability that exists but sits behind **separate licensing or a different SKU** is `Not OOB (commercial implication)`, not `Unconfirmed` — the question is commercial, not technical. A capability included in the product already being proposed is in scope and carries no commercial flag.
+- `Verified` requires a citable current source (official documentation or an authoritative internal reference); absent one, and where the platform capability itself is genuinely in doubt, the state is `Unconfirmed`.
 - `Platform verified (implementation scope)` means the platform capability exists but the customer-specific design is implementation work, not a capability gap — say which.
 - `Not OOB (commercial implication)` triggers an SE-and-AE alignment step in Next Steps; never present paid scope to the customer as included.
 - Any `Unconfirmed` requirement ahead of a scheduled decision event is decision-critical: it also appears under `Still unproven` with an owner and deadline.

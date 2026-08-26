@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.6.0 — 2026-08-26
+
+New customer-facing artifact type, plus a capability-map correction found in live use.
+
+### New — session recap / technical response template
+- `templates/customer-session-recap.html`, routed from SKILL.md. Answers *what was asked* where the APEX value document argues *why*. Structure: requirements in the customer's own framing paired with how each is addressed, what was actually demonstrated, what remains in joint definition, split next steps.
+- Reach for it when the customer is drafting requirements, a specification, or an RFP, when stakeholders were absent, or when a multi-session evaluation needs consolidating.
+- The template carries its own warning: customers routinely lift this document verbatim into their specification, so every capability sentence may become an evaluation criterion someone is later held to. Build only from ledger content in `Verified` or `Platform verified` state.
+
+### Fixed — `Unconfirmed` was being applied to shipped capabilities
+- The capability map defined its four states but never drew the boundary between "we do not know whether the platform can do this" and "we have not demonstrated it to this customer yet". In live use that produced `Unconfirmed` on capabilities the product plainly ships, which inflates technical risk in the forecast and points the proof route at things needing no proof.
+- `Unconfirmed` now explicitly means the platform capability itself is in doubt. A shipping documented capability shown only at overview level is `Platform verified`, with the remaining customer-specific design named as implementation scope.
+- A capability behind separate licensing or a different SKU is `Not OOB (commercial implication)`, not `Unconfirmed` — the question is commercial. A capability included in the product already being proposed carries no commercial flag at all.
+
+### Changed
+- Customer-facing artifact rule added: a capability the customer has raised no requirement for does not belong in the artifact. Including it converts unrequested scope into expected scope.
+
 ## v1.5.1 — 2026-08-26
 
 Two contract gaps closed; suite returns to 20/20 with zero gate failures on a complete run.

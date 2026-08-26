@@ -207,6 +207,7 @@ Two Okta-branded HTML templates:
 | **APEX value doc** | `customer-apex-value.html` | "Why Okta" leave-behind from a debrief |
 | **Workshop agenda** | `customer-workshop.html` | Hands-on session prep page |
 | **Validation plan** | `customer-poc-plan.html` | A POC or bounded in-environment validation |
+| **Session recap** | `customer-session-recap.html` | Post-session technical response — what was raised, how it's addressed |
 
 The validation plan is the bounded-POC checklist made fillable — one question, pass/fail criteria agreed up front, explicit scope-out, and a closing decision stated in advance. If a section can't be filled, the validation isn't bounded yet.
 
