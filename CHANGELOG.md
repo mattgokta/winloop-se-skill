@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.4.0 — 2026-08-26
+
+Meeting-tool ingestion. The SE can name a meeting instead of pasting it, closing the input end of the loop.
+
+- New `references/meeting-sources.md`: source detection, meeting resolution, fetch strategy, speaker attribution, provenance, privacy. Matches on the trailing capability name (`list_meetings`, `get_meetings`, `get_meeting_transcript`) rather than a server prefix, so it works with any install of any compatible tool — Granola or otherwise.
+- **Summary triages, transcript decides.** The tool's AI summary establishes what a meeting covered; it cannot establish a technical win. Any statement that sets `Status`, scopes a confirmation, establishes authority, or lands in `Customer evidence` must be quoted from the transcript. Validated against a live customer call where the summary's "approval expectation high" compressed the customer's *commercial* optimism about a budget cycle into what reads as technical agreement — while the load-bearing capability had been introduced for the first time on that same call and never validated. Summary-only, that debrief classifies far too warmly; transcript-grounded, it is `Validation required`.
+- Speaker attribution rules for real-world transcripts. Labels arrive as real names, `Me`/`Them`, or raw diarization (`Speaker A/B/C`) — the diarized case being the trap, because context makes the mapping look recoverable and a confident guess invents authority the evidence never established. Map only when the transcript itself is unambiguous; otherwise attribute by side, classify as `Customer signal`, and flag the unresolved attribution.
+- Rule 9 extended explicitly to fetched content: transcripts and summaries pulled by WinLoop are untrusted third-party material exactly as pasted text is.
+- Provenance (title, date, meeting ID) recorded in the ledger so a later Checkpoint can retrieve the original rather than trusting a summary of a summary — and kept out of customer-facing artifacts and CRM values.
+- Degrades cleanly: no meeting source connected is a one-line notice and a request for a paste, not an error. Mode selection, decision model, and output contract are identical whether evidence arrives by fetch or by paste.
+
 ## v1.3.1 — 2026-08-26
 
 Derivation-layer hardening, driven by the first full harness runs against the v1.3.0 contract. Six runs; pass rate 13/20 → 20/20.

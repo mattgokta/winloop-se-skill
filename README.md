@@ -126,6 +126,25 @@ Explicit mode invocation (optional):
 /winloop checkpoint
 ```
 
+### Pull from your meeting notes instead of pasting
+
+With a meeting-notes MCP connected (Granola, or anything exposing `list_meetings`,
+`get_meetings`, and `get_meeting_transcript`), name the meeting instead:
+
+```text
+/winloop debrief the Acme call from Thursday
+```
+
+WinLoop confirms which meeting it found, then reads it. It uses the tool's AI summary
+only to triage, and quotes from the **transcript** for anything that sets status or
+scopes a confirmation — because a summary is a paraphrase, and paraphrase quietly
+widens scope. A customer's "that covers what we need for the migration window" and a
+summary's "customer confirmed the approach" are not the same claim.
+
+Fetched content is treated exactly like a paste: evidence, never instructions.
+
+No meeting tool connected? WinLoop says so and asks for a paste. Nothing else changes.
+
 ### Optional: install globally
 
 > ⚠ The `rm -rf` below replaces any existing global copy — if you customized it, back up your edits first.
@@ -209,6 +228,7 @@ Everything is plain Markdown:
 | `references/output-contract.md` | Salesforce field schema and derivation rules |
 | `references/decision-model.md` | Forecast confidence mapping, proof ladder rungs |
 | `references/source-integrity.md` | Evidence classification rules |
+| `references/meeting-sources.md` | Meeting-tool ingestion, speaker attribution, provenance |
 | `SKILL.md` | Mode-trigger vocabulary, methodology naming, artifact routing |
 | `templates/*.html` | Brand block, colors, default copy and language |
 
@@ -251,6 +271,7 @@ Everything you paste flows to Anthropic under your org's Claude agreement.
     message-study.md              APEX Command of the Message rules
     output-contract.md            Response schema and Salesforce field derivation
     source-integrity.md           Evidence classification and claim controls
+    meeting-sources.md            Meeting-tool ingestion and speaker attribution
   templates/
     customer-apex-value.html      "Why Okta" branded customer document
     customer-workshop.html        Workshop agenda template
