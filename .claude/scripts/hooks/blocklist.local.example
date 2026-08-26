@@ -1,0 +1,8 @@
+# WinLoop per-user blocklist — copied to blocklist.local by setup-hooks.sh.
+# blocklist.local is gitignored: your real names never reach the public repo.
+#
+# One extended-regex (grep -iE) pattern per line. Add every real customer,
+# account, prospect, and colleague name that must never be committed.
+# The examples below are fictional — REPLACE them with your own:
+\b(globex|initech|hooli|stark-industries)\b
+jane\.doe|john\.smith

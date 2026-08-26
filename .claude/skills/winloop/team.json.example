@@ -1,0 +1,12 @@
+{
+  "_comment": "Copy to team.json (gitignored) and fill in. Consumed when generating customer-facing templates and the Pre-Sales Notes stamp. Photos are base64 data URIs (square headshot, 512x512 ideal): data:image/jpeg;base64,...",
+  "se_name": "Jane Doe",
+  "se_role": "Solutions Engineer",
+  "se_email": "name@okta.com",
+  "se_initials": "JD",
+  "se_photo_b64": "",
+  "ae_name": "John Smith",
+  "ae_role": "Account Executive",
+  "ae_email": "name@okta.com",
+  "ae_photo_b64": ""
+}

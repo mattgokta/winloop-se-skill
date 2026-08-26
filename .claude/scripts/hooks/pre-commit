@@ -1,0 +1,76 @@
+#!/bin/bash
+# WinLoop pre-commit hook
+# Blocks commits that contain real names, emails, photos, or customer data.
+#
+# Name and customer patterns are NOT hardcoded here — a public repo must never
+# publish the very list it protects. They live in blocklist.local (gitignored,
+# per-user, one extended-regex pattern per line, # comments allowed), created
+# from blocklist.local.example by .claude/scripts/setup-hooks.sh.
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+BLOCKLIST="$REPO_ROOT/.claude/scripts/hooks/blocklist.local"
+BLOCKED=0
+
+if [ ! -f "$BLOCKLIST" ]; then
+    echo -e "${YELLOW}⚠ WARNING:${NC} no blocklist.local found — name/customer screening is OFF."
+    echo "           Run: bash .claude/scripts/setup-hooks.sh  (creates it, then edit it with your names)"
+fi
+
+while IFS= read -r file; do
+    [ -z "$file" ] && continue
+    # Skip the hook scripts themselves (they contain patterns as strings)
+    [[ "$file" == .claude/scripts/* ]] && continue
+    content=$(git show ":$file" 2>/dev/null) || continue
+
+    # ── Real vendor email addresses ──────────────────────────────────────
+    # Allowed placeholders: name@, se@, ae@, your@, example@ and comment lines
+    disallowed=$(echo "$content" \
+        | grep -iE "[a-z0-9._%+-]+@okta\.com" \
+        | grep -viE "^\s*(#|//|<!--|--)" \
+        | grep -viE "(name|se|ae|your|example)@okta\.com")
+    if [ -n "$disallowed" ]; then
+        echo -e "${RED}❌ BLOCKED:${NC} $file — contains a real @okta.com email address"
+        BLOCKED=1
+    fi
+
+    # ── Large base64 blobs (embedded photos/logos in skill files) ───────
+    # Allowed in docs/assets/ (README screenshots). Blocked everywhere else.
+    # Catches both whole-line base64 and inline data-URI form.
+    if [[ "$file" != docs/assets/* ]]; then
+        long_b64=$(echo "$content" | awk 'length > 5000' | grep -cE '^[A-Za-z0-9+/=]+$' || echo 0)
+        # data-URI form; awk length check because BSD grep caps {n,} repetition at 255
+        datauri_b64=$(echo "$content" | awk 'match($0, /base64,[A-Za-z0-9+\/=]+/) && RLENGTH > 507 { n++ } END { print n+0 }')
+        if [ "${long_b64}" -gt 0 ] 2>/dev/null || [ "${datauri_b64}" -gt 0 ] 2>/dev/null; then
+            echo -e "${RED}❌ BLOCKED:${NC} $file — contains a large base64 blob (embedded photo or binary)"
+            BLOCKED=1
+        fi
+    fi
+
+    # ── Per-user blocklist: real customer, account, and colleague names ──
+    if [ -f "$BLOCKLIST" ]; then
+        patterns=$(grep -vE '^\s*(#|$)' "$BLOCKLIST")
+        if [ -n "$patterns" ]; then
+            hit=$(echo "$content" | grep -iE -f <(echo "$patterns"))
+            if [ -n "$hit" ]; then
+                echo -e "${RED}❌ BLOCKED:${NC} $file — matches a blocklist.local pattern (real customer/colleague name)"
+                BLOCKED=1
+            fi
+        fi
+    fi
+
+done <<< "$(git diff --cached --name-only --diff-filter=d)"
+
+if [ "$BLOCKED" -eq 1 ]; then
+    echo ""
+    echo -e "${RED}Commit blocked.${NC} Review the files above and remove sensitive content."
+    echo "See .gitignore and .claude/scripts/hooks/pre-commit for the rules."
+    exit 1
+fi
+
+echo -e "${GREEN}✅ Pre-commit check passed — no personal or customer data detected.${NC}"
+exit 0

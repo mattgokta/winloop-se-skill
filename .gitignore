@@ -1,0 +1,19 @@
+# Live deal data — never in public repo
+opportunities/
+
+# Personal team assets and account-specific Drive config — populate locally
+.claude/skills/winloop/team.json
+.claude/skills/winloop/drive-mapping.json
+
+# Per-user data-leak blocklist — real names live ONLY here, never committed
+.claude/scripts/hooks/blocklist.local
+
+# Local test runs — never commit raw results to the public repo
+tests/results/
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# macOS
+.DS_Store
+**/.DS_Store
