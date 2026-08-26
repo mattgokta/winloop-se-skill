@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.6.2 — 2026-08-26
+
+Documented upgrade path. Closes the "no upgrade path for customized clones" gap.
+
+- New **Upgrading** section in README: names the three things that live only on the SE's machine and must survive an upgrade — `team.json`, `blocklist.local`, and the ledger root — with a backup command to run first. The global-install command begins with `rm -rf`, and ledgers have been lost that way.
+- Recommends delete-and-re-clone over `git pull`. The published history was rewritten on 2026-08-26; clones taken earlier share no ancestor with the remote and still carry the removed customer names in their own local history.
+- Notes that customizations to tracked files are not preserved, and points at the branch-and-rebase pattern.
+- Flags the v1.5.0 ledger-root change for anyone upgrading across it.
+- SKILL.md now carries a matching instruction, so an assistant asked to "upgrade WinLoop" follows the documented path rather than improvising a pull or a destructive reinstall.
+
 ## v1.6.1 — 2026-08-26
 
 Repository hygiene. **No changes to the skill** — SKILL.md, references, and templates are byte-identical to v1.6.0.

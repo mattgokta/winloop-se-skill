@@ -1,6 +1,6 @@
 ---
 name: winloop
-version: "1.6.0"
+version: "1.6.2"
 description: Turn SE account context, APEX or Command of the Message requests, completed meeting notes, transcripts, demo summaries, and opportunity updates into a concise value message, defensible technical-win status, shortest proof path, exact customer ask, forecast guidance, and separate Salesforce-ready fields. Use for message studies without Gong, SE meeting preparation, call debriefs, technical validation planning, workshop-versus-POC decisions, and technical-win forecasting. Do not use for plain meeting summarization, translation, or note cleanup that does not require a technical-win decision.
 argument-hint: "[message | prepare | debrief | checkpoint] plus pasted notes or context"
 ---
@@ -44,6 +44,22 @@ If the invocation carries no notes, no context, and no mode word, do not emit a 
 Always produce the full output for the selected mode, representing missing values with the defined sentinels — `INPUT REQUIRED` inside a field is the standard way to ask. Append at most one clarifying question, and only when the answer would materially change the message, status, forecast, proof route, or a CRM value. Never withhold the output while waiting for an answer.
 
 Language runs on three independent slots, defined in the output contract: SE Decision Assist follows the user's request language, **Salesforce is always English without exception**, and customer-facing artifacts follow the customer's own language rather than the SE's. Verbatim customer quotes always stay in their original language, glossed in English inside the Salesforce layer. Enumerated values, product names, and the `WinLoop` stamp token are identifiers and are never translated.
+
+## Upgrade this skill
+
+When the user asks to upgrade, update, or pull the latest WinLoop, follow the
+Upgrading section of README.md rather than improvising a `git pull`.
+
+Three files must survive any upgrade and none of them come from the repository:
+`team.json` and `blocklist.local` are gitignored per-user configuration, and the
+ledger root holds live customer data. Copy them aside before replacing anything,
+and restore them afterwards. Never run a destructive reinstall (`rm -rf` over an
+install directory) without checking first whether a ledger or a `team.json` lives
+inside it.
+
+Prefer deleting and re-cloning over pulling. The published history was rewritten
+on 2026-08-26 to remove customer data, so any clone taken before that date has no
+common ancestor with the remote and still carries the removed names locally.
 
 ## Pull from a meeting tool
 

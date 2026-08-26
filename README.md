@@ -240,9 +240,53 @@ Everything is plain Markdown:
 
 After any customization, re-run the test suite — and if you changed the Salesforce schema, update the rubric's D5/D8 and the case expected-files in the same change (they grade the contract).
 
-**Updating WinLoop:** customize in a fork or branch and rebase on tagged releases; `references/` and `templates/` are the commonly customized files, everything else is usually safe to pull. Check the CHANGELOG per release — schema changes are called out.
+**Updating WinLoop:** see [Upgrading](#upgrading) below. Customize in a fork or branch and rebase on tagged releases; `references/` and `templates/` are the commonly customized files. Check the CHANGELOG per release — schema changes are called out.
 
 **Report a misfire:** open a GitHub issue with the mode, a de-identified input excerpt (per `references/source-integrity.md`), and actual vs. expected status. Good misfires become regression cases in `tests/`.
+
+---
+
+## Upgrading
+
+Three things on your machine are **not** in this repository and must survive any upgrade:
+
+| File | What it is |
+|---|---|
+| `.claude/skills/winloop/team.json` | your contact card — gitignored, per-user |
+| `.claude/scripts/hooks/blocklist.local` | your leak-guard name list — gitignored, per-user |
+| the ledger root | live customer data: `./opportunities/` in a repo clone, `~/winloop/opportunities/` for a global install |
+
+Back them up first. This is not optional — the global-install command below begins with `rm -rf`, and ledgers have been lost this way.
+
+```bash
+mkdir -p ~/winloop-backup && cp -R ~/winloop/opportunities ~/winloop-backup/ 2>/dev/null; find ~ -maxdepth 5 \( -name "team.json" -o -name "blocklist.local" \) -path "*winloop*" -exec cp {} ~/winloop-backup/ \; 2>/dev/null; ls -la ~/winloop-backup/
+```
+
+If your ledgers live inside the clone rather than `~/winloop/opportunities/`, move them out before continuing.
+
+**Prefer deleting and re-cloning over `git pull`.** The published history was rewritten on 2026-08-26 to remove customer data that should never have been committed. Any clone taken before that date shares no ancestor with the remote — a pull will fail — and still carries the removed names in its own local history. Re-cloning fixes both.
+
+**Repo clone:**
+
+```bash
+rm -rf winloop-se-skill && git clone https://github.com/mattgokta/winloop-se-skill && cd winloop-se-skill && bash .claude/scripts/setup-hooks.sh
+```
+
+**Global install:**
+
+```bash
+cd /tmp && rm -rf wl-upgrade && git clone -q https://github.com/mattgokta/winloop-se-skill wl-upgrade && rm -rf ~/.claude/skills/winloop && cp -R wl-upgrade/.claude/skills/winloop ~/.claude/skills/winloop
+```
+
+Then restore `team.json` and `blocklist.local` from `~/winloop-backup/`, and confirm the version:
+
+```bash
+grep -m1 version: ~/.claude/skills/winloop/SKILL.md 2>/dev/null || grep -m1 version: .claude/skills/winloop/SKILL.md
+```
+
+**If you customized tracked files** — `references/message-study.md`, template branding, the Salesforce schema — those changes are not preserved. Run `git status` and `git diff` in the old clone before deleting it, and re-apply afterwards. To avoid this recurring, keep customizations on a branch and rebase onto each release.
+
+**Ledger location changed in v1.5.0.** A global install now writes to `~/winloop/opportunities/` instead of the current working directory. If earlier ledgers are scattered across project folders, consolidate them into `~/winloop/opportunities/<account>/` once — Checkpoint reads from there.
 
 ---
 
