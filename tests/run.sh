@@ -151,7 +151,11 @@ sys.stdout.write(
 PY
 )"
 
+  judge_failed=0
   if ! claude -p "$judge_prompt" ${JUDGE_MODEL_ARGS[@]+"${JUDGE_MODEL_ARGS[@]}"} > "$judge_file" 2> "$RESULTS_DIR/case-${nn}-judge-stderr.log"; then
+    judge_failed=1
+  fi
+  if [ "$judge_failed" -eq 1 ]; then
     echo "case ${nn}: judge run failed (see $RESULTS_DIR/case-${nn}-judge-stderr.log)" >&2
     record_row "${nn}|${applicable}|?|ERROR(judge)"
     overall_fail=1
@@ -189,6 +193,41 @@ ok = bool(data.get("pass")) and not failed
 print(("PASS" if ok else "FAIL") + "|" + (",".join(failed) if failed else "-"))
 PY
 )"
+
+  # A malformed verdict is usually a transient escaping artifact in the judge's
+  # own JSON, not a real result — re-ask once before discarding the case.
+  if [ "${verdict%%|*}" = "ERROR(bad-json)" ]; then
+    echo "==> case ${nn}: judge returned malformed JSON — retrying once..."
+    if claude -p "$judge_prompt" ${JUDGE_MODEL_ARGS[@]+"${JUDGE_MODEL_ARGS[@]}"} > "$judge_file" 2>> "$RESULTS_DIR/case-${nn}-judge-stderr.log"; then
+      verdict="$(python3 - "$judge_file" "$applicable" <<'PY'
+import json, re, sys
+raw = open(sys.argv[1], encoding="utf-8").read()
+expected_ids = {s.strip() for s in sys.argv[2].split(",") if s.strip() and s.strip() != "?"}
+m = re.search(r"\{.*\}", raw, re.S)
+if not m:
+    print("ERROR(bad-json)|?")
+    raise SystemExit
+try:
+    data = json.loads(m.group(0))
+except Exception:
+    print("ERROR(bad-json)|?")
+    raise SystemExit
+items = data.get("items", {}) or {}
+if expected_ids and set(items.keys()) != expected_ids:
+    missing = ",".join(sorted(expected_ids - set(items.keys()))) or "-"
+    extra = ",".join(sorted(set(items.keys()) - expected_ids)) or "-"
+    print(f"ERROR(items-mismatch)|missing:{missing};extra:{extra}")
+    raise SystemExit
+failed = sorted(
+    {k for k, v in items.items() if not (isinstance(v, dict) and v.get("score") == 1)}
+    | set(data.get("gates_failed") or [])
+)
+ok = bool(data.get("pass")) and not failed
+print(("PASS" if ok else "FAIL") + "|" + (",".join(failed) if failed else "-"))
+PY
+)"
+    fi
+  fi
 
   status="${verdict%%|*}"
   failed_items="${verdict#*|}"

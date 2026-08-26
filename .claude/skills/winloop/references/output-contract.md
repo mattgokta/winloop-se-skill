@@ -74,6 +74,8 @@ Rules:
 - [product or use case] — [state] — [open criteria or None]
 ```
 
+Each area's state is classified by exactly the same rules as the overall `Status` — confirmer authority, confirmation quality, and the criteria-completeness gate all apply per area. A scoped confirmation from someone without evaluation authority, or a customer signal short of confirmation, caps that area at `Validation required` just as it would cap the whole opportunity; an area never reaches `Ready to ask` on evidence that would not carry the overall status there. The per-area breakdown is a finer-grained view of the same judgment, never a place where weaker evidence buys a stronger label.
+
 The overall `Status` is the most conservative state across decision-critical areas, on the order `At risk` > `Validation required` > `Ready to ask` > `Confirmed` (most to least conservative). Per-area confirmations never aggregate into an overall `Confirmed`: even with every decision-critical area individually confirmed, the overall state caps at `Ready to ask` until an authoritative stakeholder explicitly confirms the overall solution — the all-areas-confirmed case makes the overall ask the next action. Areas in scope but not decision-critical are listed with a note, not blended into the overall state.
 
 ### Capability map (only when requirements are being verified individually)
@@ -98,6 +100,24 @@ Still hypothesis: [untested statements, unchanged and still labeled]
 ```
 
 ### Copy to Salesforce
+
+**Check the org-schema precedence rule first.** If the user's request or pasted context names the CRM fields their org uses, emit exactly those fields — deriving each value from the derivation rules below by closest meaning — and stop; the canonical block does not apply. Only when no fields are named, produce all blocks below.
+
+Do not assess whether the named list is the org's *complete* field set: naming fields is the instruction, and the SE knows their own CRM. Emit what they named, nothing more. Adding canonical fields they did not ask for is a failure of this rule, not a helpful extra.
+
+When an org-declared field carries an explanatory companion line in their schema — most commonly a `POC Required` field with a `Reason:` line — emit that line too. The value stays a bare enum; the Reason carries the nuance that would otherwise have no home, since the canonical Pre-Sales Notes field is not being emitted.
+
+An org-declared `POC Required` is always exactly three lines, never two — the `Reason:` line is part of the field, not an optional addition:
+
+```text
+POC Required
+[Yes | No | TBD]
+Reason: [one sentence — the route chosen instead, or what blocks choosing one]
+```
+
+A bare value with no Reason is an incomplete field.
+
+Every value must be independently copyable: a field's value line carries the exact enum value, date, or sentinel and nothing else. Explanation, caveats, and "leave this alone" guidance belong in Pre-Sales Notes, never inside a field value.
 
 Produce all blocks below in every Debrief. Each block maps to a field in the **Presales & Services Details** tab. Emit them in the order shown. End with the review line. Use `INPUT REQUIRED` when a value can only come from the SE; use `TBD` when a value exists but is not yet determined; use `Unknown` when evidence does not establish it.
 
@@ -175,9 +195,11 @@ Derive from WinLoop status:
 | Validation required — requirements known, proof route agreed and in progress | 3 - Solution Development |
 | Ready to ask | 4 - Validate Solution |
 | Confirmed | 4 - Validate Solution |
-| At risk | Hold at current stage; note risk in Pre-Sales Notes |
+| At risk | `INPUT REQUIRED — retain current stage; do not advance while At risk` |
 
 Tie-break: while the criteria-completeness gate is unpassed (the requirements list is not yet customer-confirmed as complete), use `2 - Discovery & Technical Qualification` even when a proof route has been provisionally chosen; move to `3 - Solution Development` only once the confirmed criteria list exists and the route is being executed against it.
+
+The `At risk` row emits the sentinel exactly as written — it is the field value, because only the SE can see the stage currently set in Salesforce. Do not substitute prose, and do not derive a stage from the underlying evidence: At risk always yields that sentinel, with the risk itself recorded in Pre-Sales Notes.
 
 When the current stage in Salesforce is already ahead of the derived stage, do not roll it back — note the discrepancy in Pre-Sales Notes and flag for AE alignment.
 
@@ -186,7 +208,7 @@ When the current stage in Salesforce is already ahead of the derived stage, do n
 - `Neutral` — Competitive parity; no clear advantage or disadvantage established by the evidence.
 - `Negative` — A competitor holds a confirmed advantage in a decision-critical area, or a product gap exists that Okta cannot close within the evaluation window.
 
-When no competitive signal exists in the evidence, default to `Neutral`.
+`Positive` requires a named competitor or an explicit competitive comparison in the evidence. A successful demo, satisfied requirements, or customer enthusiasm are not competitive signals — with no competitor present in the evidence, the value is `Neutral` regardless of how well the solution performed. When no competitive signal exists, default to `Neutral`.
 
 ##### Presales Concern
 Choose the single most decision-critical gap:
@@ -204,14 +226,16 @@ Map from WinLoop evidence using these rules:
 |---|---|
 | D-Decision Process | Decision owner unidentified, decision timeline undefined, or evaluation criteria not agreed |
 | P-Paper Process | Procurement, legal, or contract path undefined |
-| P-Product | Any unverified capability, open accuracy flag, or confirmed product gap |
+| P-Product | A decision-critical capability that is unverified or a confirmed product gap — not every open accuracy flag. A flag about dates, quarter conventions, internal wording, or commercial scope is not a product gap; a criterion the customer has already validated is not unverified. |
 | I-Identify Pain | Customer pain or requirements unattributed, unconfirmed, or stated by SE only |
 | C-Champion | No internal stakeholder with evaluation authority identified |
 | C-Compelling Event | No urgency driver, budget trigger, or deadline established |
 
 Emit as a semicolon-separated string matching the picklist format, e.g.: `D-Decision Process;P-Product;C-Champion`
 
-Scope: include a code only when the gap is decision-relevant for this opportunity now — a short note's silence on a topic is not by itself a gap. When in doubt early-stage, include exactly the codes that correspond to items under `Still unproven` and `Presales Concern`, not every code that is merely unestablished.
+**Include a code only on positive evidence of the gap, never on the source material's silence.** Each trigger above requires something in the evidence that establishes the gap — a stated blocker, an unanswered decision-critical question, an unverified capability the customer is relying on. A topic the notes simply never mention is not a gap: a debrief that says nothing about procurement does not earn `P-Paper Process`, and one that says nothing about competitors does not earn any code at all.
+
+The working test: every emitted code should trace to a specific item under `Still unproven`, to the chosen `Presales Concern`, or to a named risk in the evidence. If you cannot point to that item, drop the code. `None` is a valid and common value — a clean debrief with confirmed criteria and no open blockers emits it.
 
 ##### Technical Win Date
 - Exact date only when grounded in a scheduled confirmation event.
@@ -224,7 +248,15 @@ Derive from the chosen `Shortest proof route` — do not judge it independently:
 - `Not Required` when the chosen route is any rung below POC: the known decision-critical uncertainty can be resolved without one. Pending inputs that may still emerge (for example, an incomplete requirements list) do not change this — note them in Pre-Sales Notes and revisit only if a POC-worthy uncertainty later appears.
 - `Planned` when the chosen route is POC, the bounded-POC conditions in the decision model are satisfied, and the POC has not started.
 - `In Progress` / `Completed` only when the evidence explicitly shows a POC underway or finished.
-- When no proof route can be chosen yet because the decision-critical uncertainty itself is unidentified, emit the sentinel `TBD` for this field, leave the CRM picklist unchanged, and record the open question in Pre-Sales Notes (the Salesforce picklist has no TBD value).
+- `TBD` whenever no proof route can yet be settled — whether because the decision-critical uncertainty is unidentified, **or because the uncertainty is known but the route to resolve it cannot be fixed yet** (for example, the customer demands validation without agreeing to a bounded proposition, or the scope needed to size the route is still open). Emit the sentinel `TBD`, leave the CRM picklist unchanged, and record the open question in Pre-Sales Notes (the Salesforce picklist has no TBD value).
+
+  Operational test, applied strictly in this order — step 1 decides before step 2 is considered:
+
+  1. **Is the decision-critical uncertainty identified?** If discovery still has to establish what actually needs proving, the value is `TBD`, whatever route the output sketches for afterwards. A route proposed on top of an unidentified uncertainty is a plan for discovery, not a settled proof route — naming a demo does not settle a question nobody has framed yet.
+  2. **Otherwise, does `Shortest proof route` name a route the SE can act on** — send documentation, run a demo, hold a configuration session, schedule a workshop? Then it is settled: `Not Required` for any rung below POC, `Planned` for a bounded POC. The SE does not need the customer's prior agreement for this; choosing the rung is the SE's call.
+  3. **Otherwise** — the uncertainty is identified, but the customer's posture blocks route selection (they demand validation and will not agree to a bounded proposition) — `TBD`.
+
+  Past step 1, when in doubt and a concrete route is named, use `Not Required`.
 
 When `Not Required`, name the recommended alternative route in Pre-Sales Notes.
 
@@ -234,6 +266,8 @@ Aim for 100–180 words. Prepend the stamp `[YYYY-MM-DD <initials> WinLoop]` to 
 Include: meeting type and date; solution areas; scoped customer confirmations with speaker roles; overall technical-win status; decision-critical open criteria; chosen validation route.
 
 Exclude: feature-by-feature recap; unverified product or competitor claims; internal coaching language.
+
+This exclusion covers every Salesforce block, not just the notes, and it applies to the claim itself — not only to endorsing it. Do not restate an unverified competitor claim in order to warn against it: a CRM record that repeats the claim propagates it regardless of the caveat attached. Warnings of that kind belong in `Accuracy flags`, inside SE Decision Assist, where they stay out of the CRM.
 
 ##### Pre-Sales Next Steps
 Each step: action — owner or `TBD` — due date or `TBD`. Separate customer from SE/vendor actions. Always include a technical-decision checkpoint step.
@@ -291,6 +325,8 @@ Opportunity movement:
 With no ledger and no `Prior state:` block, write: `Unknown — no prior state supplied; this run is the first grounded snapshot`, and offer the ledger append.
 
 Zero-evidence floor: when the supplied context contains no grounded customer evidence, write `Customer evidence: None — no grounded customer confirmation in the supplied context`, default `Status` to `Validation required` (or `At risk` when a decision-model risk trigger applies), and set `Window/date: Unknown`, `Confidence: Low`. Never promote the SE's impressions into evidence to fill the template.
+
+When the floor line applies it is the *only* content under `Customer evidence` — no bullets follow it. SE statements do not belong in that section even when correctly labelled `SE stated`: a reader scanning the section sees the deal's evidence, and a labelled bullet under that heading still reads as evidence where a bare floor line does not. Put what the SE said under `Accuracy flags` when it needs recording, or leave it out.
 
 When an opportunity ledger file (`opportunities/<account>/<account>.md`, per the ledger convention in SKILL.md) or a `Prior state:` block is supplied, base `Opportunity movement` on it, and apply the decision model's win-decay rules — a previously `Confirmed` status may be downgraded with the reason stated.
 

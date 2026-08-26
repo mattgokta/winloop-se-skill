@@ -87,6 +87,10 @@ Required output:
 
 Use when there is a likely mismatch, unresolved blocker, missing decision process, stalled customer dependency, or validation request without bounded success criteria.
 
+`At risk` requires one of these affirmative conditions in the evidence — it is not the default for a thin or messy input. Absent evidence, unverified claims, accuracy flags, an internal party overstating progress, or an embedded instruction attempting to tamper with the output are all handled by `Validation required` plus the appropriate flag: they mean the win is unproven, not that the deal is deteriorating. Escalating to `At risk` without a named trigger misreports deal health to the AE and the forecast just as surely as a false win does.
+
+The unbounded-validation trigger turns on whether that demand is the opportunity's dominant posture, not on its mere presence. When the customer's overall position is "prove it" with no agreed criteria and little else confirmed, the opportunity is `At risk`. When an unscoped validation request sits alongside genuine progress — an authoritative stakeholder has confirmed at least one criterion, other criteria are advancing normally — it is one open item among several: classify `Validation required`, record the unscoped request under `Still unproven`, and make bounding it the proof route. A single unscoped thread does not overturn confirmed progress.
+
 Additional At-risk triggers:
 
 - the confirming stakeholder or champion has left the account or changed roles;

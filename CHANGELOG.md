@@ -1,5 +1,28 @@
 # Changelog
 
+## v1.3.1 — 2026-08-26
+
+Derivation-layer hardening, driven by the first full harness runs against the v1.3.0 contract. Six runs; pass rate 13/20 → 20/20.
+
+**Baseline honesty:** the final run passed 20/20 with zero gate failures, on a complete run (`COMPLETE` marker, 20 summary rows). But this suite is LLM-judged and non-deterministic — two judgment-heavy cases (09's evidence-section floor, 17's org-declared Reason line) flipped between runs before their fixes landed. Treat the baseline as "20/20, with run-to-run variance expected on borderline formatting items", not as a determinism guarantee. Re-run before trusting a regression claim.
+
+### Decision correctness
+- `At risk` now requires an affirmative trigger. Missing evidence, accuracy flags, internal parties overstating progress, and attempted output tampering all resolve to `Validation required` plus a flag — they mean the win is unproven, not that the deal is deteriorating, and over-escalating misreports deal health as badly as a false win.
+- The unbounded-validation trigger turns on **dominant posture**: a customer whose overall position is "prove it" with nothing confirmed is `At risk`; an unscoped request sitting alongside an authoritative confirmation and normal progress is one open item under `Still unproven`. Resolves an ambiguity where two test cases used the same evidence shape for different statuses.
+- Per-solution-area states are bound by the same authority, confirmation-quality, and completeness rules as the overall status. Previously the per-area breakdown was an unguarded path where a non-authoritative signal could buy a `Ready to ask` label the overall status would have refused.
+
+### Salesforce derivation
+- `POC Status` derivation is now an ordered three-step test, uncertainty check first: an unidentified decision-critical uncertainty yields `TBD` regardless of any route sketched afterwards (a route proposed on top of an unframed question is a plan for discovery, not a settled route); otherwise a nameable SE-actionable route settles it; otherwise a customer posture that blocks route selection yields `TBD`.
+- Org-schema precedence strengthened: naming fields is the instruction — do not assess whether the named list is "complete", and never add canonical fields the SE did not ask for. An org-declared `POC Required` is always three lines including `Reason:`.
+- `Presales Stage` for `At risk` emits a sentinel rather than prose, and every field value line now carries the exact enum/date/sentinel and nothing else — caveats belong in Pre-Sales Notes.
+- `Risks/Gaps` fires only on positive evidence of a gap, never on the source material's silence; `P-Product` narrowed to decision-critical capability gaps (a stale-date or quarter-convention flag is not a product gap). `Technical Differentiation: Positive` requires an actual competitor in evidence — a successful demo is not a competitive signal.
+- Unverified competitor claims are excluded from every Salesforce block, including when restated as a warning: a CRM record that repeats a claim propagates it regardless of the caveat. Such warnings belong in `Accuracy flags`.
+- The zero-evidence floor line is the only permitted content under `Customer evidence`; correctly-labelled `SE stated` bullets still read as evidence under that heading.
+
+### Tests
+- Case 02's absolute forecast date moved forward and its expected file now scores both branches, so the case stays honest once the date passes rather than failing correct staleness handling. Date-anchored cases documented in `tests/README.md`.
+- Judge instructed to quote evidence with single quotes only (nested double quotes corrupted an otherwise-passing verdict), and `run.sh` re-asks once on malformed JSON instead of discarding the case.
+
 ## v1.3.0 — 2026-08-25
 
 Data-hygiene and consistency release after a full multi-agent review (94 findings, 12 adversarially verified). **Public git history was reset to a single sanitized commit in this release** — early clones should be deleted and re-cloned.

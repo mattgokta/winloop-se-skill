@@ -30,6 +30,7 @@ Return STRICT JSON and nothing else — no prose before or after, no markdown co
 {"items": {"U1": {"score": 1, "why": "..."}}, "gates_failed": [], "pass": true}
 
 - `items` contains exactly the IDs from the Expected file's `rubric:` list, each mapped to `{"score": 1 | 0, "why": "one line citing the decisive evidence"}`.
+- **Inside every `why` string, quote evidence with single quotes only — never double quotes.** Nested double quotes are the most common cause of malformed output, and a verdict that fails to parse is discarded entirely. Write `the IT Director said 'that meets the requirement'`, never `said \"that meets the requirement\"`.
 - `gates_failed` is an array of the failed GATE item IDs only (empty array when none).
 - `pass` is a boolean per the rules above.
 

@@ -15,9 +15,10 @@ rubric: [U1, U2, U3, U4, U5, U7, U9, D1, D2, D3, D4, D5, D6, D7, D8]
 - The criteria-completeness check appears (under `Still unproven`, in the exact ask, or in next steps): the customer never said the three criteria are the complete evaluation set, so the output must probe completeness and whether a security, architecture, or procurement review precedes technical sign-off.
 - Shortest proof route is `none — ready to ask`. Recommending documentation, another demo, a workshop, or a POC fails — validation of the known criteria is complete.
 - The exact customer ask names the three criteria and ties them to the overall technical-win confirmation.
-- Forecast Window/date is August 12, 2026, preserved exactly — it is grounded in the scheduled decision review with the technical decision owner. No vaguer window, no different date. The `Technical Win Date` field carries this same date.
+- Forecast Window/date is October 21, 2026, preserved exactly — it is grounded in the scheduled decision review with the technical decision owner. No vaguer window, no different date. The `Technical Win Date` field carries this same date.
+- Run-date tolerance (this case carries an absolute date): if the run date is on or after October 21, 2026, the scheduled event has passed and the correct behavior changes — treating the date as stale and emitting `INPUT REQUIRED` with a passed-event explanation also passes U3 and U4, provided the original date is still named and no replacement date is invented. Score U3/U4 against whichever branch the run date puts the case in; never fail the skill for refusing to carry a date whose event has already occurred.
 - Forecast Confidence is `Medium`, not `High` and not `Low`. Reasoning the judge must see reflected: the decision model grants `High` only when the confirmation meeting is scheduled, stakeholders are identified, validation is complete, AND the criteria-completeness check has been passed. The first three conditions hold here, but the completeness check has not been passed — there is no customer statement that the three criteria are the full set, and the security/architecture/procurement question is unanswered — so the completeness check is the named remaining dependency and Confidence is `Medium`. An output granting `High` fails; `Low` is also wrong given the scheduled confirmation event with identified stakeholders.
-- The forecast Rationale names the customer decision event (the August 12 decision review) and the completeness dependency, not SE activity.
+- The forecast Rationale names the customer decision event (the October 21 decision review) and the completeness dependency, not SE activity.
 - POC Status is exactly `Not Required` and the POC checkbox is `No` — both derived from the chosen `none — ready to ask` route (a rung below POC), never judged independently; any nuance lives in Pre-Sales Notes, not inside the field values.
 - The input declares no org field set, so Salesforce content follows the canonical Presales & Services Details schema: the three banner groups (Presales Information / Presales Notes / Presales Reporting checkboxes) with every contract field present in the contract's order, each value independently copyable; Pre-Sales Notes begins with the `[YYYY-MM-DD <initials> WinLoop]` stamp (any run date acceptable; `INPUT REQUIRED` in place of the initials is acceptable when no initials source exists); the layer ends with the review-before-paste line.
 - Pre-Sales Next Steps separate customer actions from SE/vendor actions, each with owner and date or `TBD`.
@@ -43,7 +44,7 @@ Still unproven:
 
 Shortest proof route:
 
-none — ready to ask. Per-criterion validation is complete; the remaining step is the explicit overall confirmation, with the criteria-completeness check embedded, at the August 12, 2026 decision review.
+none — ready to ask. Per-criterion validation is complete; the remaining step is the explicit overall confirmation, with the criteria-completeness check embedded, at the October 21, 2026 decision review.
 
 Exact customer ask:
 
@@ -51,7 +52,7 @@ Exact customer ask:
 
 Technical-win forecast:
 
-- Window/date: August 12, 2026 — scheduled decision review with the IT Director
+- Window/date: October 21, 2026 — scheduled decision review with the IT Director
 - Confidence: Medium
 - Rationale: the confirmation event is scheduled with the technical decision owner and per-criterion validation is complete, but the criteria-completeness check has not been passed — no customer statement that the three criteria are the full evaluation set, and the security/architecture/procurement review question is unanswered — so High confidence is not available.
 
@@ -62,7 +63,7 @@ Accuracy flags:
 
 Next best action:
 
-At the August 12, 2026 decision review, pose the exact technical-win ask above — the three criteria plus the completeness and security/architecture/procurement check — to the IT Director.
+At the October 21, 2026 decision review, pose the exact technical-win ask above — the three criteria plus the completeness and security/architecture/procurement check — to the IT Director.
 
 ### Copy to Salesforce
 
@@ -90,7 +91,7 @@ D-Decision Process
 
 Technical Win Date
 
-August 12, 2026
+October 21, 2026
 
 POC Status
 
@@ -100,17 +101,17 @@ Not Required
 
 Pre-Sales Notes
 
-[2026-07-30 INPUT REQUIRED WinLoop] Status: Ready to ask — no overall confirmation yet. Demo July 21 and hands-on workshop July 28, 2026 covered the three criteria agreed in June. IT Director (customer-named technical decision owner) confirmed each criterion separately: the coexistence approach "covers what we need for the migration window" (SSO coexistence); lifecycle automation from both HR feeds, including the rehire case, "meets the lifecycle requirement we defined"; the delegated admin build-out is "exactly the admin model we asked for." These are scoped per-criterion confirmations; the overall technical-win question was not asked. Open item: criteria-list completeness — the customer has not stated the three criteria are the complete evaluation set, and it is unknown whether a security, architecture, or procurement review precedes technical sign-off. Decision review scheduled August 12, 2026; the explicit overall ask, including the completeness check, will be posed there. POC not required — no further technical validation is planned before the review.
+[2026-07-30 INPUT REQUIRED WinLoop] Status: Ready to ask — no overall confirmation yet. Demo July 21 and hands-on workshop July 28, 2026 covered the three criteria agreed in June. IT Director (customer-named technical decision owner) confirmed each criterion separately: the coexistence approach "covers what we need for the migration window" (SSO coexistence); lifecycle automation from both HR feeds, including the rehire case, "meets the lifecycle requirement we defined"; the delegated admin build-out is "exactly the admin model we asked for." These are scoped per-criterion confirmations; the overall technical-win question was not asked. Open item: criteria-list completeness — the customer has not stated the three criteria are the complete evaluation set, and it is unknown whether a security, architecture, or procurement review precedes technical sign-off. Decision review scheduled October 21, 2026; the explicit overall ask, including the completeness check, will be posed there. POC not required — no further technical validation is planned before the review.
 
 Pre-Sales Next Steps
 
 Customer:
 
-- Walk the three agreed criteria with the internal team and give a formal technical answer at the decision review — IT Director — August 12, 2026
+- Walk the three agreed criteria with the internal team and give a formal technical answer at the decision review — IT Director — October 21, 2026
 
 SE / Vendor:
 
-- Pose the explicit technical-win ask, including the criteria-completeness and security/architecture/procurement check, at the decision review — SE — August 12, 2026
+- Pose the explicit technical-win ask, including the criteria-completeness and security/architecture/procurement check, at the decision review — SE — October 21, 2026
 - Confirm the decision-review invite includes every stakeholder needed for an authoritative answer — SE — TBD
 
 ── PRESALES REPORTING (checkboxes) ───────────────────────────────

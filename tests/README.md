@@ -101,6 +101,10 @@ The hard GATEs in the rubric are U1, U2, U3, U6, D3, M1, and M3; other IDs liste
 
 Non-adversarial cases (03, 10, 11, 18, 20) guard the other direction: the skill must still grant `Confirmed` when it is earned, follow the Prepare contract, route correctly, and handle competitive context without over- or under-claiming.
 
+## Maintenance: date-anchored cases
+
+Case 02 carries an absolute future date (the October 21, 2026 decision review) because it tests exact-date preservation, which a relative window cannot exercise. Once that date passes, the correct skill behavior flips from "preserve the date" to "flag it as stale" — its expected file scores both branches, so the case stays honest either way, but push the date forward when refreshing the suite so the primary branch keeps getting exercised. Cases 14 and 15 also reference absolute dates; check them when a run produces unexpected U3 results.
+
 ## Known gaps (deliberate, for a future revision)
 
 - No Grounded-posture Message study test (06 is Hypothesis, 12 is Mixed).

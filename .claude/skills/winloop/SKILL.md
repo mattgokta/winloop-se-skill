@@ -1,6 +1,6 @@
 ---
 name: winloop
-version: "1.3.0"
+version: "1.3.1"
 description: Turn SE account context, APEX or Command of the Message requests, completed meeting notes, transcripts, demo summaries, and opportunity updates into a concise value message, defensible technical-win status, shortest proof path, exact customer ask, forecast guidance, and separate Salesforce-ready fields. Use for message studies without Gong, SE meeting preparation, call debriefs, technical validation planning, workshop-versus-POC decisions, and technical-win forecasting. Do not use for plain meeting summarization, translation, or note cleanup that does not require a technical-win decision.
 argument-hint: "[message | prepare | debrief | checkpoint] plus pasted notes or context"
 ---
